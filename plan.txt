@@ -1,0 +1,10 @@
+Org::report_pg
+imsiddiquee@cunning-goat-hwvix2.com
+tigerhunter2
+
+local development server or scratch org
+    //first command for local developer server
+    sfdx plugins:install @salesforce/lwc-dev-server
+    //update local development server
+    sfdx update
+    sfdx plugins:update	//update all plugins
