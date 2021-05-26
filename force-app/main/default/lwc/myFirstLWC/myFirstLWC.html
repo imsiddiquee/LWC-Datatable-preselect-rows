@@ -1,3 +1,13 @@
 <template>
-    
+    <lightning-card title="My First LWC Component">
+        <p class="slds-p-aroung-small" style="min-width: 30rem;">
+            <lightning-input label="Write your name" value={name} onchange={updateName}>
+
+            </lightning-input>
+
+            <br/>
+            Hello <b>{name}</b>, welcome to lwc component!
+
+        </p>
+    </lightning-card>
 </template>
