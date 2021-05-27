@@ -23,3 +23,14 @@ apply css on lightning card
             </p>
         </lightning-card>
     </template>
+
+for-each in html
+
+          <template for:each={todoTasks} for:item="todoTask">
+            <li class="slds-item" key={todoTask.id}>            
+            </li>
+          </template>
+
+Base on index delete item from a list
+    const todoTaskIndex = todoTasks.findIndex((task) => task.id === idToDelete);
+    todoTasks.splice(todoTaskIndex, 1);
