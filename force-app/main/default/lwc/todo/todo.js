@@ -14,10 +14,17 @@ export default class Todo extends LightningElement {
   todoTasksResponse;
   newTask = "";
 
+  processing = true;
+
   @wire(getTasks) getTodoTask(response) {
     this.todoTasksResponse = response;
     let data = response.data;
     let error = response.error;
+
+    if (data || error) {
+      this.processing = false;
+    }
+
     if (data) {
       console.log("data");
       this.todoTasks = [];
@@ -43,12 +50,17 @@ export default class Todo extends LightningElement {
     // this.todoTasks.push({ id: this.todoTasks.length + 1, name: this.newTask });
     // this.newTask = "";
 
+    if (this.newTask === "") return;
+
+    this.processing = true;
     insertTask({ subject: this.newTask })
       .then((response) => {
         // this.accountRecords = response;
 
         this.todoTasks.push({
-          id: this.todoTasks.length + 1,
+          id: this.todoTasks[this.todoTasks.length - 1].id
+            ? this.todoTasks[this.todoTasks.length - 1].id + 1
+            : 1,
           name: this.newTask,
           recordId: response.Id
         });
@@ -56,13 +68,16 @@ export default class Todo extends LightningElement {
       })
       .catch((error) => {
         console.log(error.body.message);
-      });
+      })
+      .finally(() => (this.processing = false));
   }
 
   deleteTaskFromList(event) {
     const idToDelete = event.target.name;
     let todoTasks = this.todoTasks;
     let recordIdToDelete;
+    this.processing = true;
+
     const todoTaskIndex = todoTasks.findIndex((task) => task.id === idToDelete);
 
     recordIdToDelete = this.todoTasks[todoTaskIndex].recordId;
@@ -76,10 +91,14 @@ export default class Todo extends LightningElement {
       })
       .catch((error) => {
         console.log(error);
-      });
+      })
+      .finally(() => (this.processing = false));
   }
 
   refreshTotoList() {
-    refreshApex(this.todoTasksResponse);
+    this.processing = true;
+    refreshApex(this.todoTasksResponse).finally(
+      () => (this.processing = false)
+    );
   }
 }
