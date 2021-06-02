@@ -34,3 +34,17 @@ for-each in html
 Base on index delete item from a list
     const todoTaskIndex = todoTasks.findIndex((task) => task.id === idToDelete);
     todoTasks.splice(todoTaskIndex, 1);
+
+
+
+Salesforce module used in LWC
+    
+    1)@salesforce/apex
+    2)@salesforce/i18n		==>local,currency,lang
+    3)@salesforce/label		==>import labelName from '@salesforce/label/labelReference';	==>namespace.labelName
+    4)@salesforce/schema	
+    5)@salesforce/user
+
+Load external CSS ,JavaScript,chart library In LWC
+    import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
+        https://github.com/amitastreait/Static-Resource-LightningWebComponents
