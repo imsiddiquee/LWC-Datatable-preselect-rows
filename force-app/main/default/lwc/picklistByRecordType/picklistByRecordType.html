@@ -1,0 +1,13 @@
+<template>
+  <template if:true={picklistValuesByRecordType}>
+    <lightning-combobox
+      name="AccountType"
+      label="Account Type"
+      value={selectedAccountTypeValue}
+      placeholder="-Select-"
+      options={picklistValuesByRecordType}
+      onchange={handleAccountTypeChange}
+    ></lightning-combobox>
+    <p>Selected values is:: {selectedAccountTypeValue}</p>
+  </template>
+</template>
