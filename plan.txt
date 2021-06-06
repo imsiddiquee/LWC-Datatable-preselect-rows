@@ -48,3 +48,7 @@ Salesforce module used in LWC
 Load external CSS ,JavaScript,chart library In LWC
     import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
         https://github.com/amitastreait/Static-Resource-LightningWebComponents
+
+
+dummy record type id
+     recordTypeId: '012000000000000AAA'
