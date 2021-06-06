@@ -1,0 +1,29 @@
+<template>
+  <lightning-card title="Picklist Demo">
+    <template if:true={industryValueOptions.data}>
+      <lightning-combobox
+        name="Industry"
+        label="Industry"
+        value={selectedIndustryValue}
+        placeholder="-Select-"
+        options={industryValueOptions.data.values}
+        onchange={handleIndustryChange}
+      ></lightning-combobox>
+    </template>
+
+    <p>Selected value is: {selectedIndustryValue}</p>
+
+    <template if:true={typeOptionValues}>
+      <lightning-combobox
+        name="Type"
+        label="Type"
+        value={selectedTypeValue}
+        placeholder="-Select-"
+        options={typeOptionValues}
+        onchange={handleTypeChange}
+      ></lightning-combobox>
+    </template>
+  </lightning-card>
+
+  <p>Selected value is: {selectedTypeValue}</p>
+</template>

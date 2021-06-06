@@ -52,3 +52,10 @@ Load external CSS ,JavaScript,chart library In LWC
 
 dummy record type id
      recordTypeId: '012000000000000AAA'
+
+import defination
+
+    import { getPicklistValues } from "lightning/uiObjectInfoApi";
+      ==>getPicklistValues is a method.
+    import INDUSTRY_FIELD from "@salesforce/schema/Account.Industry";
+       ==> INDUSTRY_FIELD is a variable.
