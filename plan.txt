@@ -59,3 +59,10 @@ import defination
       ==>getPicklistValues is a method.
     import INDUSTRY_FIELD from "@salesforce/schema/Account.Industry";
        ==> INDUSTRY_FIELD is a variable.
+
+APEX 
+    loop on MAP variable
+        for(Account acc:newAccountMap.values())
+        {
+            acc.id
+        }
