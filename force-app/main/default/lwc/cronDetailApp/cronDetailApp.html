@@ -1,0 +1,60 @@
+<template>
+  <lightning-card title="User related jobs">
+    <template if:true={userOptionsList}>
+      <div class="slds-var-m-around_medium">
+        <lightning-combobox
+          name="ActiveUsers"
+          label="Active Users"
+          value={selectedUser}
+          placeholder="Select User"
+          options={userOptionsList}
+          onchange={handleUserChange}
+        ></lightning-combobox>
+        <p>Selected User is:<b>{selectedUser}</b></p>
+      </div>
+    </template>
+
+    <div class="slds-var-m-around_medium">
+      <template if:true={tableData}>
+        <p>
+          The selected user is
+          <b>&nbsp;{selectedUser} created total corn jobs</b>&nbsp;
+          <lightning-badge
+            label={tableData.length}
+            class="slds-badge_inverse"
+          ></lightning-badge>
+        </p>
+        <div class="myTable">
+          <lightning-datatable
+            key-field="Id"
+            data={tableData}
+            columns={columns}
+            hide-checkbox-column
+          ></lightning-datatable>
+        </div>
+      </template>
+    </div>
+    <div class="slds-var-m-around_medium">
+      <template if:true={apexJobData}>
+        <p>
+          The selected user is
+          <b>&nbsp;{selectedUser} created total apex jobs</b>&nbsp;
+
+          <lightning-badge
+            label={apexJobData.length}
+            class="slds-badge_inverse"
+          ></lightning-badge>
+        </p>
+
+        <div class="myTable">
+          <lightning-datatable
+            key-field="Id"
+            data={apexJobData}
+            columns={apexColumns}
+            hide-checkbox-column
+          ></lightning-datatable>
+        </div>
+      </template>
+    </div>
+  </lightning-card>
+</template>
