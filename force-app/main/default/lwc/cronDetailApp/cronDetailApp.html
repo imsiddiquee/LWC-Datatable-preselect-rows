@@ -1,5 +1,12 @@
 <template>
   <lightning-card title="User related jobs">
+    <template if:true={processing}>
+      <lightning-spinner
+        alternative-text="Loading"
+        size="small"
+      ></lightning-spinner>
+    </template>
+
     <template if:true={userOptionsList}>
       <div class="slds-var-m-around_medium">
         <lightning-combobox
@@ -13,6 +20,8 @@
         <p>Selected User is:<b>{selectedUser}</b></p>
       </div>
     </template>
+
+    <br>
 
     <div class="slds-var-m-around_medium">
       <template if:true={tableData}>
@@ -34,6 +43,9 @@
         </div>
       </template>
     </div>
+
+    <br></br>
+
     <div class="slds-var-m-around_medium">
       <template if:true={apexJobData}>
         <p>
@@ -46,7 +58,7 @@
           ></lightning-badge>
         </p>
 
-        <div class="myTable">
+        <div class="slds-var-m-around_medium">
           <lightning-datatable
             key-field="Id"
             data={apexJobData}
@@ -54,7 +66,33 @@
             hide-checkbox-column
           ></lightning-datatable>
         </div>
+
+        <div class="slds-var-m-around_medium">
+          <p class="slds-var-m-vertical_medium content">
+            Displaying {startingRecord} to {endingRecord} of {totalRecountCount}
+            records. Page {page} of {totalPage}.
+          </p>
+          <lightning-layout>
+            <lightning-layout-item>
+              <lightning-button
+                label="Previous"
+                icon-name="utility:chevronleft"
+                onclick={previousHandler}
+              ></lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="grow"></lightning-layout-item>
+            <lightning-layout-item>
+              <lightning-button
+                label="Next"
+                icon-name="utility:chevronright"
+                icon-position="right"
+                onclick={nextHandler}
+              ></lightning-button>
+            </lightning-layout-item>
+          </lightning-layout>
+        </div>
       </template>
+
     </div>
   </lightning-card>
 </template>

@@ -26,6 +26,18 @@ const APEXJObSCOLUMNS = [
 ];
 
 export default class CronDetailApp extends LightningElement {
+  page = 1; //this will initialize 1st page
+  items = []; //it contains all the records.
+  // data = []; //data to be displayed in the table
+
+  startingRecord = 1; //start record position per page
+  endingRecord = 0; //end record position per page
+  pageSize = 5; //default value we are assigning
+  totalRecountCount = 0; //total record count received from all retrieved records
+  totalPage = 0; //total number of page is needed to display all records
+
+  //
+
   tableData = [];
   apexJobData = [];
   userOptionsList;
@@ -43,6 +55,8 @@ export default class CronDetailApp extends LightningElement {
     9: { jobName: "Batch Job" },
     A: { jobName: "Reporting Notification" }
   };
+
+  processing = true;
 
   @wire(GetUserCronJobDetailList, { userId: "$selectedUser" })
   getCronJobList(response) {
@@ -74,7 +88,7 @@ export default class CronDetailApp extends LightningElement {
         });
       });
 
-      console.log(this.tableData);
+      //console.log(this.tableData);
     } else if (error) {
       console.log("error");
     }
@@ -86,7 +100,7 @@ export default class CronDetailApp extends LightningElement {
     let error = response.error;
 
     if (data || error) {
-      //this.processing = false;
+      this.processing = false;
     }
 
     if (data) {
@@ -98,15 +112,17 @@ export default class CronDetailApp extends LightningElement {
 
       this.userOptionsList = tempArray;
 
-      console.log(this.userOptionsList);
+      //console.log(this.userOptionsList);
     } else if (error) {
       console.log("error");
     }
   }
 
   handleUserChange(event) {
+    this.processing = true;
+
     this.selectedUser = event.target.value;
-    console.log("selectedUser::", this.selectedUser);
+    //console.log("selectedUser::", this.selectedUser);
     // this.template.querySelector("[data-id='selectId']").value =
     //   this.selectedUser;
   }
@@ -118,18 +134,20 @@ export default class CronDetailApp extends LightningElement {
     let error = response.error;
 
     if (data || error) {
-      //this.processing = false;
+      this.processing = false;
     }
 
     if (data) {
-      this.apexJobData = [];
+      let formatApexJobsDate = [];
 
-      console.log("apex data", data);
+      // console.log(data);
 
       data.forEach((item) => {
-        this.apexJobData.push({
+        formatApexJobsDate.push({
           id: item.Id,
-          className: item.ApexClass.Name,
+          className: Object.keys(item).includes("ApexClass")
+            ? item.ApexClass.Name
+            : "",
           jobItemsProcessed: item.JobItemsProcessed,
           jobType: item.JobType,
           status: item.Status,
@@ -139,9 +157,61 @@ export default class CronDetailApp extends LightningElement {
         });
       });
 
-      console.log("apexJobData", this.apexJobData);
+      //c/configurationCustomize
+
+      this.items = formatApexJobsDate;
+      this.totalRecountCount = formatApexJobsDate.length; //here it is 23
+      this.totalPage = Math.ceil(this.totalRecountCount / this.pageSize); //here it is 5
+
+      //initial data to be displayed ----------->
+      //slice will take 0th element and ends with 5, but it doesn't include 5th element
+      //so 0 to 4th rows will be displayed in the table
+      this.apexJobData = this.items.slice(0, this.pageSize);
+      this.endingRecord = this.pageSize;
+      //this.columns = columns;
+
+      this.error = undefined;
+
+      // console.log("apexJobData", this.data);
     } else if (error) {
       console.log("error");
     }
+  }
+
+  //clicking on previous button this method will be called
+  previousHandler() {
+    if (this.page > 1) {
+      this.page = this.page - 1; //decrease page by 1
+      this.displayRecordPerPage(this.page);
+    }
+  }
+  //clicking on next button this method will be called
+  nextHandler() {
+    //console.log("test");
+    if (this.page < this.totalPage && this.page !== this.totalPage) {
+      this.page = this.page + 1; //increase page by 1
+      this.displayRecordPerPage(this.page);
+    }
+  }
+
+  //this method displays records page by page
+  displayRecordPerPage(page) {
+    /*let's say for 2nd page, it will be => "Displaying 6 to 10 of 23 records. Page 2 of 5"
+        page = 2; pageSize = 5; startingRecord = 5, endingRecord = 10
+        so, slice(5,10) will give 5th to 9th records.
+        */
+    this.startingRecord = (page - 1) * this.pageSize;
+    this.endingRecord = this.pageSize * page;
+
+    this.endingRecord =
+      this.endingRecord > this.totalRecountCount
+        ? this.totalRecountCount
+        : this.endingRecord;
+
+    this.apexJobData = this.items.slice(this.startingRecord, this.endingRecord);
+
+    //increment by 1 to display the startingRecord count,
+    //so for 2nd page, it will show "Displaying 6 to 10 of 23 records. Page 2 of 5"
+    this.startingRecord = this.startingRecord + 1;
   }
 }

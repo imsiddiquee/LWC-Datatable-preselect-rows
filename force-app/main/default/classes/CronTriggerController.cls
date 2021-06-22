@@ -38,7 +38,7 @@ public with sharing class CronTriggerController {
 
            return [ select ApexClassId, ApexClass.name, Id, JobItemsProcessed, JobType, Status, NumberOfErrors, MethodName,CreatedById
             from AsyncApexJob
-            where CreatedById =:userId limit 10];
+            where CreatedById =:userId limit 1000];
 
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
