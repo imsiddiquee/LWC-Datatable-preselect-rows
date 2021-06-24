@@ -66,3 +66,15 @@ APEX
         {
             acc.id
         }
+Transaction in apex
+
+        Savepoint sp = Database.setSavepoint();
+        try
+        {
+            update listAccToUpdate;
+        }
+        catch(Exception e)
+        {
+            Database.RollBack(sp);
+            System.debug(e);
+        }

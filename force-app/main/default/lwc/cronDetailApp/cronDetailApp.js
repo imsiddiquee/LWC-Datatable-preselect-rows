@@ -1,4 +1,4 @@
-import { LightningElement, wire } from "lwc";
+import { api, LightningElement, wire } from "lwc";
 
 import GetUserCronJobDetailList from "@salesforce/apex/CronTriggerController.GetUserCronJobDetailList";
 import GetAllActiveUsersMap from "@salesforce/apex/CronTriggerController.GetAllActiveUsersMap";
@@ -26,6 +26,7 @@ const APEXJObSCOLUMNS = [
 ];
 
 export default class CronDetailApp extends LightningElement {
+  @api componentTitle = "User related jobs";
   page = 1; //this will initialize 1st page
   items = []; //it contains all the records.
   // data = []; //data to be displayed in the table
