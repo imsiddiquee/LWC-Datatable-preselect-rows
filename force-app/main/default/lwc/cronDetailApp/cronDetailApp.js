@@ -3,6 +3,8 @@ import { api, LightningElement, wire } from "lwc";
 import GetUserCronJobDetailList from "@salesforce/apex/CronTriggerController.GetUserCronJobDetailList";
 import GetAllActiveUsersMap from "@salesforce/apex/CronTriggerController.GetAllActiveUsersMap";
 import GetApexJobsCreatedByUser from "@salesforce/apex/CronTriggerController.GetApexJobsCreatedByUser";
+import GetUserFlowAndProcessBuilderDetailList from "@salesforce/apex/CronTriggerController.GetUserFlowAndProcessBuilderDetailList";
+import GetUserApprovalTaskDetailList from "@salesforce/apex/CronTriggerController.GetUserApprovalTaskDetailList";
 
 const COLUMNS = [
   { label: "Job Id", fieldName: "jobId" },
@@ -25,6 +27,24 @@ const APEXJObSCOLUMNS = [
   { label: "Created By Id", fieldName: "createdById" }
 ];
 
+const FLOWCOLUMNS = [
+  { label: "Flow Id", fieldName: "id" },
+  { label: "Flow Label", fieldName: "label" },
+  { label: "Process Type", fieldName: "processType" },
+  { label: "Builder", fieldName: "builder" },
+  { label: "Is Active", fieldName: "isActive" },
+  { label: "Owner", fieldName: "lastModifiedBy" }
+];
+
+const APPROVALCOLUMNS = [
+  { label: "Approval Id", fieldName: "id" },
+  { label: "Approval Label", fieldName: "name" },
+  { label: "Type", fieldName: "type" },
+  { label: "Where It Used", fieldName: "whereItUsed" },
+  { label: "status", fieldName: "status" },
+  { label: "Owner", fieldName: "owner" }
+];
+
 export default class CronDetailApp extends LightningElement {
   @api componentTitle = "User related jobs";
   page = 1; //this will initialize 1st page
@@ -39,12 +59,16 @@ export default class CronDetailApp extends LightningElement {
 
   //
 
+  approvalData = [];
+  flowData = [];
   tableData = [];
   apexJobData = [];
   userOptionsList;
   selectedUser;
   columns = COLUMNS;
   apexColumns = APEXJObSCOLUMNS;
+  flowColumns = FLOWCOLUMNS;
+  approvalColumns = APPROVALCOLUMNS;
   userId = "";
   JOBTYPEMAP = {
     1: { jobName: "Data Export" },
@@ -59,6 +83,78 @@ export default class CronDetailApp extends LightningElement {
 
   processing = true;
 
+  @wire(GetUserApprovalTaskDetailList, { userId: "$selectedUser" })
+  retrivedUserApprovalTaskDetailList(response) {
+    let data = response.data;
+    let error = response.error;
+
+    if (data || error) {
+      this.processing = false;
+    }
+
+    if (data) {
+      this.approvalData = [];
+
+      data.forEach((item) => {
+        this.approvalData.push({
+          id: item.Id,
+          name: item.Name,
+          type: item.Type,
+          whereItUsed: item.TableEnumOrId,
+          status: item.State,
+          owner: item.CreatedById
+        });
+      });
+
+      console.log("retrivedUserApprovalTaskDetailList", this.approvalData);
+    } else if (error) {
+      console.log("error");
+    }
+  }
+
+  //working
+  @wire(GetUserFlowAndProcessBuilderDetailList, { userId: "$selectedUser" })
+  retrivedUserFlowAndProcessBuilderDetailList(response) {
+    let data = response.data;
+    let error = response.error;
+
+    if (data || error) {
+      this.processing = false;
+    }
+
+    if (data) {
+      this.flowData = [];
+
+      data.forEach((item) => {
+        this.flowData.push({
+          id: item.Id,
+          label: item.Label,
+          isActive: item.IsActive,
+          lastModifiedBy: item.LastModifiedBy,
+          processType: this.formatProcessType(item.ProcessType),
+          builder: item.Builder
+        });
+      });
+
+      // console.log("retrivedUserFlowAndProcessBuilderDetailList", this.flowData);
+    } else if (error) {
+      console.log("error");
+    }
+  }
+
+  formatProcessType(processType) {
+    switch (processType.toLowerCase()) {
+      case "workflow":
+        return "Process Builder";
+      case "flow":
+        return "Flow";
+      case "autolaunchedflow":
+        return "Flow";
+      default:
+        return processType;
+    }
+  }
+
   @wire(GetUserCronJobDetailList, { userId: "$selectedUser" })
   getCronJobList(response) {
     //this.todoTasksResponse = response;
@@ -66,7 +162,7 @@ export default class CronDetailApp extends LightningElement {
     let error = response.error;
 
     if (data || error) {
-      //this.processing = false;
+      this.processing = false;
     }
 
     if (data) {

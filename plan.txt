@@ -78,3 +78,17 @@ Transaction in apex
             Database.RollBack(sp);
             System.debug(e);
         }
+
+salesforce standard funtion
+    get user id ==> userinfo.getUserId()
+
+SOQL get ProcessBuilder,Flow,AutoLaunchFlow information
+
+SELECT Id, ApiName, ProcessType, TriggerType, Description, Label, Builder, IsActive, LastModifiedDate, LastModifiedBy, DurableId, ManageableState FROM FlowDefinitionView limit 10
+
+Process-Builder
+	ProcessType==>Workflow==> Process-Builder==>builder ==>Cloud Flow Designer
+
+Flow
+	ProcessType==>Flow==> Flow==>builder ==>Flow Builder
+	ProcessType==>AutoLaunchedFlow==> Flow==>builder ==>Flow Builder

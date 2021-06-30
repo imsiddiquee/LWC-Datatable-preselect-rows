@@ -44,6 +44,52 @@
       </template>
     </div>
 
+    <br/>
+
+    <div class="slds-var-m-around_medium">
+      <template if:true={flowData}>
+        <p>
+          The selected user is
+          <b>&nbsp;{selectedUser} created total process builder and flows are</b>&nbsp;
+          <lightning-badge
+            label={flowData.length}
+            class="slds-badge_inverse"
+          ></lightning-badge>
+        </p>
+        <div class="myTable">
+          <lightning-datatable
+            key-field="Id"
+            data={flowData}
+            columns={flowColumns}
+            hide-checkbox-column
+          ></lightning-datatable>
+        </div>
+      </template>
+    </div>
+
+    <br/>
+
+    <div class="slds-var-m-around_medium">
+      <template if:true={approvalData}>
+        <p>
+          The selected user is
+          <b>&nbsp;{selectedUser} created total approval process are</b>&nbsp;
+          <lightning-badge
+            label={approvalData.length}
+            class="slds-badge_inverse"
+          ></lightning-badge>
+        </p>
+        <div class="myTable">
+          <lightning-datatable
+            key-field="Id"
+            data={approvalData}
+            columns={approvalColumns}
+            hide-checkbox-column
+          ></lightning-datatable>
+        </div>
+      </template>
+    </div>
+
     <br></br>
 
     <div class="slds-var-m-around_medium">
