@@ -19,28 +19,27 @@
         ></lightning-combobox>
         <p>Selected User is:<b>{selectedUser}</b></p>
       </div>
-    </template>
-
-    <br>
+    </template>    
 
     <div class="slds-var-m-around_medium">
       <template if:true={tableData}>
-        <p>
+        <!-- <p>
           The selected user is
           <b>&nbsp;{selectedUser} created total corn jobs</b>&nbsp;
           <lightning-badge
             label={tableData.length}
             class="slds-badge_inverse"
           ></lightning-badge>
-        </p>
-        <div class="myTable">
+        </p> -->
+        <!-- <div class="myTable">
           <lightning-datatable
             key-field="Id"
             data={tableData}
             columns={columns}
             hide-checkbox-column
           ></lightning-datatable>
-        </div>
+        </div> -->
+        <c-reusable-data-table card-title="Cron Job list" source-data={tableData} columns={columns}></c-reusable-data-table>
       </template>
     </div>
 
