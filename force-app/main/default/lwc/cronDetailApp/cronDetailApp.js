@@ -5,6 +5,7 @@ import GetAllActiveUsersMap from "@salesforce/apex/CronTriggerController.GetAllA
 import GetApexJobsCreatedByUser from "@salesforce/apex/CronTriggerController.GetApexJobsCreatedByUser";
 import GetUserFlowAndProcessBuilderDetailList from "@salesforce/apex/CronTriggerController.GetUserFlowAndProcessBuilderDetailList";
 import GetUserApprovalTaskDetailList from "@salesforce/apex/CronTriggerController.GetUserApprovalTaskDetailList";
+import GetWorkflowRuleList from "@salesforce/apex/CronTriggerController.GetWorkflowRuleList";
 
 const COLUMNS = [
   { label: "Job Id", fieldName: "jobId" },
@@ -45,6 +46,14 @@ const APPROVALCOLUMNS = [
   { label: "Owner", fieldName: "owner" }
 ];
 
+const WORKFLOWRULECOLUMNS = [
+  { label: "Id", fieldName: "id" },
+  { label: "Workflow Label", fieldName: "name" },
+  { label: "Type", fieldName: "type" },
+  { label: "Where It Used", fieldName: "whereItUsed" },
+  { label: "Owner", fieldName: "lastModifiedById" }
+];
+
 export default class CronDetailApp extends LightningElement {
   @api componentTitle = "User related jobs";
   page = 1; //this will initialize 1st page
@@ -59,6 +68,7 @@ export default class CronDetailApp extends LightningElement {
 
   //
 
+  workflowData = [];
   approvalData = [];
   flowData = [];
   tableData = [];
@@ -69,6 +79,7 @@ export default class CronDetailApp extends LightningElement {
   apexColumns = APEXJObSCOLUMNS;
   flowColumns = FLOWCOLUMNS;
   approvalColumns = APPROVALCOLUMNS;
+  workflowColumns = WORKFLOWRULECOLUMNS;
   userId = "";
   JOBTYPEMAP = {
     1: { jobName: "Data Export" },
@@ -83,6 +94,41 @@ export default class CronDetailApp extends LightningElement {
 
   processing = true;
 
+  @wire(GetWorkflowRuleList, { userId: "$selectedUser" })
+  retrivedWorkflowRuleList(response) {
+    let data = response.data;
+    let error = response.error;
+
+    if (data || error) {
+      this.processing = false;
+    }
+
+    if (data) {
+      this.workflowData = [];
+
+      data.records.forEach((item) => {
+        this.workflowData.push({
+          id: item.Id,
+          name: item.Name,
+          whereItUsed: item.TableEnumOrId,
+          createdById: item.CreatedById,
+          lastModifiedById: item.LastModifiedById,
+          type: "Workflow"
+        });
+      });
+
+      //filter
+      this.workflowData = this.workflowData.filter(
+        (p) => p.lastModifiedById === this.selectedUser
+      );
+
+      console.log(this.workflowData);
+    } else if (error) {
+      console.log("error");
+    }
+  }
+
+  //working
   @wire(GetUserApprovalTaskDetailList, { userId: "$selectedUser" })
   retrivedUserApprovalTaskDetailList(response) {
     let data = response.data;
@@ -106,13 +152,12 @@ export default class CronDetailApp extends LightningElement {
         });
       });
 
-      console.log("retrivedUserApprovalTaskDetailList", this.approvalData);
+      // console.log("retrivedUserApprovalTaskDetailList", this.approvalData);
     } else if (error) {
       console.log("error");
     }
   }
 
-  //working
   @wire(GetUserFlowAndProcessBuilderDetailList, { userId: "$selectedUser" })
   retrivedUserFlowAndProcessBuilderDetailList(response) {
     let data = response.data;

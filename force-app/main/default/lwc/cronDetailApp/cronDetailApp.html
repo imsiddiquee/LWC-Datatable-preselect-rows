@@ -90,6 +90,29 @@
       </template>
     </div>
 
+    <br/>
+
+    <div class="slds-var-m-around_medium">
+      <template if:true={workflowData}>
+        <p>
+          The selected user is
+          <b>&nbsp;{selectedUser} created total workflow rules are</b>&nbsp;
+          <lightning-badge
+            label={workflowData.length}
+            class="slds-badge_inverse"
+          ></lightning-badge>
+        </p>
+        <div class="myTable">
+          <lightning-datatable
+            key-field="Id"
+            data={workflowData}
+            columns={workflowColumns}
+            hide-checkbox-column
+          ></lightning-datatable>
+        </div>
+      </template>
+    </div>
+
     <br></br>
 
     <div class="slds-var-m-around_medium">
