@@ -5,7 +5,7 @@ export default class ReusableDataTable extends LightningElement {
   @api cardTitle = "";
 
   @api columns = [];
-  @api rowOffset = 0;
+  rowOffset = 0;
 
   @track page = 1; //this will initialize 1st page
   @track items = []; //it contains all the records.
@@ -23,7 +23,6 @@ export default class ReusableDataTable extends LightningElement {
   }
 
   set sourceData(value) {
-    console.log("sourceData", value);
     this.items = value;
     this.totalRecountCount = value.length; //here it is 23
     this.totalPage = Math.ceil(this.totalRecountCount / this.pageSize); //here it is 5
@@ -44,6 +43,7 @@ export default class ReusableDataTable extends LightningElement {
       this.page = this.page - 1; //decrease page by 1
       this.displayRecordPerPage(this.page);
     }
+    this.decreaseRowOffset();
     this.setDelay();
   }
 
@@ -54,6 +54,7 @@ export default class ReusableDataTable extends LightningElement {
       this.page = this.page + 1; //increase page by 1
       this.displayRecordPerPage(this.page);
     }
+    this.increaseRowOffset();
 
     this.setDelay();
   }
@@ -77,6 +78,14 @@ export default class ReusableDataTable extends LightningElement {
     //increment by 1 to display the startingRecord count,
     //so for 2nd page, it will show "Displaying 6 to 10 of 23 records. Page 2 of 5"
     this.startingRecord = this.startingRecord + 1;
+  }
+
+  increaseRowOffset() {
+    this.rowOffset += this.pageSize;
+  }
+
+  decreaseRowOffset() {
+    this.rowOffset -= this.pageSize;
   }
 
   setDelay() {

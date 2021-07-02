@@ -17,150 +17,57 @@
           options={userOptionsList}
           onchange={handleUserChange}
         ></lightning-combobox>
-        <p>Selected User is:<b>{selectedUser}</b></p>
+        <p>Selected User id :<b>{selectedUser}</b></p>
       </div>
-    </template>    
+    </template>
 
     <div class="slds-var-m-around_medium">
-      <template if:true={tableData}>
-        <!-- <p>
-          The selected user is
-          <b>&nbsp;{selectedUser} created total corn jobs</b>&nbsp;
-          <lightning-badge
-            label={tableData.length}
-            class="slds-badge_inverse"
-          ></lightning-badge>
-        </p> -->
-        <!-- <div class="myTable">
-          <lightning-datatable
-            key-field="Id"
-            data={tableData}
-            columns={columns}
-            hide-checkbox-column
-          ></lightning-datatable>
-        </div> -->
-        <c-reusable-data-table card-title="Cron Job list" source-data={tableData} columns={columns}></c-reusable-data-table>
+      <template if:true={cronData.length}>
+        <c-reusable-data-table
+          card-title="Cron Job list"
+          source-data={cronData}
+          columns={cronColumns}
+        ></c-reusable-data-table>
       </template>
     </div>
 
-    <br/>
-
     <div class="slds-var-m-around_medium">
-      <template if:true={flowData}>
-        <p>
-          The selected user is
-          <b>&nbsp;{selectedUser} created total process builder and flows are</b>&nbsp;
-          <lightning-badge
-            label={flowData.length}
-            class="slds-badge_inverse"
-          ></lightning-badge>
-        </p>
-        <div class="myTable">
-          <lightning-datatable
-            key-field="Id"
-            data={flowData}
-            columns={flowColumns}
-            hide-checkbox-column
-          ></lightning-datatable>
-        </div>
+      <template if:true={flowData.length}>
+        <c-reusable-data-table
+          card-title="Process builder and flow Job list"
+          source-data={flowData}
+          columns={flowColumns}
+        ></c-reusable-data-table>
       </template>
     </div>
 
-    <br/>
-
     <div class="slds-var-m-around_medium">
-      <template if:true={approvalData}>
-        <p>
-          The selected user is
-          <b>&nbsp;{selectedUser} created total approval process are</b>&nbsp;
-          <lightning-badge
-            label={approvalData.length}
-            class="slds-badge_inverse"
-          ></lightning-badge>
-        </p>
-        <div class="myTable">
-          <lightning-datatable
-            key-field="Id"
-            data={approvalData}
-            columns={approvalColumns}
-            hide-checkbox-column
-          ></lightning-datatable>
-        </div>
+      <template if:true={approvalData.length}>
+        <c-reusable-data-table
+          card-title="Approval Job list"
+          source-data={approvalData}
+          columns={approvalColumns}
+        ></c-reusable-data-table>
       </template>
     </div>
 
-    <br/>
-
     <div class="slds-var-m-around_medium">
-      <template if:true={workflowData}>
-        <p>
-          The selected user is
-          <b>&nbsp;{selectedUser} created total workflow rules are</b>&nbsp;
-          <lightning-badge
-            label={workflowData.length}
-            class="slds-badge_inverse"
-          ></lightning-badge>
-        </p>
-        <div class="myTable">
-          <lightning-datatable
-            key-field="Id"
-            data={workflowData}
-            columns={workflowColumns}
-            hide-checkbox-column
-          ></lightning-datatable>
-        </div>
+      <template if:true={workflowData.length}>
+        <c-reusable-data-table
+          card-title="Workflow Job list"
+          source-data={workflowData}
+          columns={workflowColumns}
+        ></c-reusable-data-table>
       </template>
     </div>
-
-    <br></br>
-
     <div class="slds-var-m-around_medium">
-      <template if:true={apexJobData}>
-        <p>
-          The selected user is
-          <b>&nbsp;{selectedUser} created total apex jobs</b>&nbsp;
-
-          <lightning-badge
-            label={apexJobData.length}
-            class="slds-badge_inverse"
-          ></lightning-badge>
-        </p>
-
-        <div class="slds-var-m-around_medium">
-          <lightning-datatable
-            key-field="Id"
-            data={apexJobData}
-            columns={apexColumns}
-            hide-checkbox-column
-          ></lightning-datatable>
-        </div>
-
-        <div class="slds-var-m-around_medium">
-          <p class="slds-var-m-vertical_medium content">
-            Displaying {startingRecord} to {endingRecord} of {totalRecountCount}
-            records. Page {page} of {totalPage}.
-          </p>
-          <lightning-layout>
-            <lightning-layout-item>
-              <lightning-button
-                label="Previous"
-                icon-name="utility:chevronleft"
-                onclick={previousHandler}
-              ></lightning-button>
-            </lightning-layout-item>
-            <lightning-layout-item flexibility="grow"></lightning-layout-item>
-            <lightning-layout-item>
-              <lightning-button
-                label="Next"
-                icon-name="utility:chevronright"
-                icon-position="right"
-                onclick={nextHandler}
-              ></lightning-button>
-            </lightning-layout-item>
-          </lightning-layout>
-        </div>
+      <template if:true={apexJobData.length}>
+        <c-reusable-data-table
+          card-title="Apex Job list"
+          source-data={apexJobData}
+          columns={apexColumns}
+        ></c-reusable-data-table>
       </template>
-
     </div>
   </lightning-card>
 </template>
