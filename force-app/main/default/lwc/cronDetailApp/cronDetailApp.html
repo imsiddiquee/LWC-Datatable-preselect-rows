@@ -22,6 +22,41 @@
     </template>
 
     <div class="slds-var-m-around_medium">
+      <div class="slds-card_boundary slds-var-m-around_xxx-small">
+        <lightning-card>
+          <h3 slot="title">Job summary</h3>
+
+          <lightning-layout horizontal-align="spread">
+            <lightning-layout-item padding="around-small">
+              <p>Cron Job</p>
+              <lightning-badge label={cronData.length}></lightning-badge>
+            </lightning-layout-item>
+
+            <lightning-layout-item padding="around-small">
+              <p>Flow/P-builder Job</p>
+              <lightning-badge label={flowData.length}></lightning-badge>
+            </lightning-layout-item>
+
+            <lightning-layout-item padding="around-small">
+              <p>Approval Job</p>
+              <lightning-badge label={approvalData.length}></lightning-badge>
+            </lightning-layout-item>
+
+            <lightning-layout-item padding="around-small">
+              <p>Workflow Job</p>
+              <lightning-badge label={flowData.length}></lightning-badge>
+            </lightning-layout-item>
+
+            <lightning-layout-item padding="around-small">
+              <p>Apex Job</p>
+              <lightning-badge label={apexJobData.length}></lightning-badge>
+            </lightning-layout-item>
+          </lightning-layout>
+        </lightning-card>
+      </div>
+    </div>
+
+    <div class="slds-var-m-around_medium">
       <template if:true={cronData.length}>
         <c-reusable-data-table
           card-title="Cron Job list"
