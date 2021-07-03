@@ -1,5 +1,13 @@
 <template>
   <lightning-card title={componentTitle}>
+    <lightning-button-icon
+      slot="actions"
+      icon-name="utility:sync"
+      alternative-text="Refresh"
+      title="Refresh"
+      onclick={refreshList}
+    ></lightning-button-icon>
+
     <template if:true={processing}>
       <lightning-spinner
         alternative-text="Loading"
@@ -44,7 +52,7 @@
 
             <lightning-layout-item padding="around-small">
               <p>Workflow Job</p>
-              <lightning-badge label={flowData.length}></lightning-badge>
+              <lightning-badge label={workflowData.length}></lightning-badge>
             </lightning-layout-item>
 
             <lightning-layout-item padding="around-small">

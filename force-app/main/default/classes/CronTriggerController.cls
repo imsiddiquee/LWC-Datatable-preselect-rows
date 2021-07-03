@@ -19,8 +19,15 @@ public with sharing class CronTriggerController {
     }
     
     @AuraEnabled(cacheable=true)
-    public static List<CronTrigger> GetUserCronJobDetailList(Id userId){
+    public static List<CronTrigger> GetUserCronJobDetailList(String userId){
         try {
+
+            if(String.isEmpty(userId))
+            {                
+                return new List<CronTrigger>();
+            }
+
+            
 
             return [select Id, CronJobDetail.Id,CronJobDetail.Name,CronJobDetail.JobType,State,NextFireTime,PreviousFireTime, ownerId
              from CronTrigger
@@ -35,8 +42,14 @@ public with sharing class CronTriggerController {
 
 
     @AuraEnabled(cacheable=true)
-    public static List<AsyncApexJob> GetApexJobsCreatedByUser(Id userId){
+    public static List<AsyncApexJob> GetApexJobsCreatedByUser(String userId){
         try {
+           
+            if(String.isEmpty(userId))
+            {
+
+                return new List<AsyncApexJob>();
+            }
 
            return [ select ApexClassId, ApexClass.name, Id, JobItemsProcessed, JobType, Status, NumberOfErrors, MethodName,CreatedById
             from AsyncApexJob
@@ -49,8 +62,14 @@ public with sharing class CronTriggerController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<FlowDefinitionView> GetUserFlowAndProcessBuilderDetailList(Id userId){
+    public static List<FlowDefinitionView> GetUserFlowAndProcessBuilderDetailList(String userId){
         try {
+
+            if(String.isEmpty(userId))
+            {
+
+                return new List<FlowDefinitionView>();
+            }
 
             User currentUser=[SELECT Username, Id, Name FROM User where id=:userId LIMIT 1];
 
@@ -68,8 +87,14 @@ public with sharing class CronTriggerController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<ProcessDefinition> GetUserApprovalTaskDetailList(Id userId){
+    public static List<ProcessDefinition> GetUserApprovalTaskDetailList(String userId){
         try {
+
+            if(String.isEmpty(userId))
+            {
+
+                return new List<ProcessDefinition>();
+            }
 
            // User currentUser=[SELECT Username, Id, Name FROM User where id=:userId LIMIT 1];
 
@@ -85,8 +110,15 @@ public with sharing class CronTriggerController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static  Map<String, Object> GetWorkflowRuleList(Id userId)
+    public static  Map<String, Object> GetWorkflowRuleList(String userId)
     {
+
+        if(String.isEmpty(userId))
+        {
+
+            return new Map<String, Object>();
+        }
+
         String sToken=UserInfo.getSessionId();
         Map<String, Object> newsJsonData = new Map<String, Object>();
 

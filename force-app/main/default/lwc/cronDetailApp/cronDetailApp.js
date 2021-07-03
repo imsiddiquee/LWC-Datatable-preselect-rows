@@ -92,7 +92,9 @@ export default class CronDetailApp extends LightningElement {
       this.processing = false;
     }
 
-    if (data) {
+    if (data && !Object.keys(data).length) {
+      this.workflowData = [];
+    } else if (data) {
       this.workflowData = [];
 
       data.records.forEach((item) => {
@@ -288,5 +290,14 @@ export default class CronDetailApp extends LightningElement {
     } else if (error) {
       console.log("error");
     }
+  }
+
+  refreshList() {
+    // this.workflowData = [];
+    // this.approvalData = [];
+    // this.flowData = [];
+    // this.cronData = [];
+    // this.apexJobData = [];
+    this.selectedUser = "";
   }
 }
