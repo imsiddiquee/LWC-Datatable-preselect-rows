@@ -7,6 +7,13 @@ import GetUserFlowAndProcessBuilderDetailList from "@salesforce/apex/CronTrigger
 import GetUserApprovalTaskDetailList from "@salesforce/apex/CronTriggerController.GetUserApprovalTaskDetailList";
 import GetWorkflowRuleList from "@salesforce/apex/CronTriggerController.GetWorkflowRuleList";
 
+/**
+ * dependent on components are
+ * reusableDataTable==>for grid
+ * paginator==>grid pagination
+ * utils==>export to csv
+ */
+
 const CRONCOLUMNS = [
   { label: "Job Id", fieldName: "jobId" },
   { label: "Job Name", fieldName: "jobName" },
