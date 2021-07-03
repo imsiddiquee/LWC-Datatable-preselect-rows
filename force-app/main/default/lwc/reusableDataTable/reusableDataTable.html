@@ -8,6 +8,16 @@
 
   <div class="slds-card_boundary slds-var-m-around_xxx-small">
     <lightning-card class="slds-table_striped">
+      <template if:true={items.length}>
+        <lightning-button-icon
+          slot="actions"
+          icon-name="utility:download"
+          alternative-text="Export to csv"
+          title="Export to csv"
+          onclick={exportToCSV}
+        ></lightning-button-icon>
+      </template>
+
       <h3 slot="title">
         {cardTitle} has a total of
         <lightning-badge label={totalRecountCount}></lightning-badge> records

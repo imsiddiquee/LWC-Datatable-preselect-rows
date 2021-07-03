@@ -1,4 +1,5 @@
 import { LightningElement, api, track } from "lwc";
+import { exportCSVFileWithDynamicHeader } from "c/utils";
 
 export default class ReusableDataTable extends LightningElement {
   processing = false;
@@ -93,5 +94,11 @@ export default class ReusableDataTable extends LightningElement {
       this.processing = false;
       window.clearTimeout(timer);
     }, 300);
+  }
+
+  exportToCSV() {
+    if (Object.keys(this.items)) {
+      exportCSVFileWithDynamicHeader(this.items, "export file");
+    }
   }
 }
