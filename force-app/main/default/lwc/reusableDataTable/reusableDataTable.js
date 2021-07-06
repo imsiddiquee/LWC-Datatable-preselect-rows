@@ -1,5 +1,7 @@
 import { LightningElement, api, track } from "lwc";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { exportCSVFileWithDynamicHeader } from "c/utils";
+import AbortTheSelectedJob from "@salesforce/apex/CronTriggerController.AbortTheSelectedJob";
 
 export default class ReusableDataTable extends LightningElement {
   processing = false;
@@ -100,5 +102,33 @@ export default class ReusableDataTable extends LightningElement {
     if (Object.keys(this.items)) {
       exportCSVFileWithDynamicHeader(this.items, "export file");
     }
+  }
+
+  handleRowAction(event) {
+    const row = event.detail.row;
+    console.log(row);
+    this.abortTheJob(row.id);
+  }
+
+  abortTheJob(jobId) {
+    // AbortTheSelectedJob({ jobId: jobId })
+    //   .then((response) => {
+    //     console.log("successfully job abort", response);
+    //   })
+    //   .catch((error) => {
+    //     console.log("failed job abort", error);
+    //   });
+
+    this.showToastMessage(jobId);
+  }
+
+  showToastMessage(jobid) {
+    const toastEvnt = new ShowToastEvent({
+      title: `Successfully job ${jobid} is abort.`,
+      message: this.msg,
+      variant: "success",
+      mode: "dismissable"
+    });
+    this.dispatchEvent(toastEvnt);
   }
 }

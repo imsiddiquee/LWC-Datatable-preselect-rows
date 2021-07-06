@@ -13,9 +13,21 @@ import GetWorkflowRuleList from "@salesforce/apex/CronTriggerController.GetWorkf
  * reusableDataTable==>for grid
  * paginator==>grid pagination
  * utils==>export to csv
+ * confirmation dialog
  */
 
 const CRONCOLUMNS = [
+  {
+    label: "Abort",
+    type: "button-icon",
+    initialWidth: 75,
+    typeAttributes: {
+      iconName: "action:delete",
+      title: "Abort",
+      variant: "border-filled",
+      alternativeText: "Abort"
+    }
+  },
   { label: "Job Id", fieldName: "jobId" },
   { label: "Job Name", fieldName: "jobName" },
   { label: "JobType", fieldName: "jobType" },

@@ -160,5 +160,23 @@ public with sharing class CronTriggerController {
         }
     }
 
+    @AuraEnabled
+    public static Boolean AbortTheSelectedJob(String jobId){
+        try {
+            if(String.isEmpty(jobId))
+            {
+
+                return false;
+            }
+
+            System.abortJob(jobId);
+            return true;
+        } catch (Exception e) {
+            //throw new AuraHandledException(e.getMessage());
+        }
+        return false;
+    }
+    
+
 
 }
