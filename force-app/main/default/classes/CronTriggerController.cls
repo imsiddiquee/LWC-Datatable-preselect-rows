@@ -116,32 +116,45 @@ public with sharing class CronTriggerController {
         if(String.isEmpty(userId))
         {
 
-            return new Map<String, Object>();
+            return null;
         }
 
-        String sToken=UserInfo.getSessionId();
-        Map<String, Object> newsJsonData = new Map<String, Object>();
+        String sToken=SessionHelper.getSessionId();//UserInfo.getSessionId();        
+        Map<String, Object> flowJsonData = new Map<String, Object>();
+        String body = null;
 
-        String toolingSOQL='/services/data/v36.0/tooling/query?q=Select+Id,Name,TableEnumOrId,createdById,lastModifiedById+From+WorkflowRule';
-        String baseURL=URL.getSalesforceBaseUrl().toExternalForm();
-        String endPoint=baseURL+toolingSOQL;
 
-        Http h = new Http();
-        HttpRequest hr = new HttpRequest();
-        hr.setHeader('Authorization', 'Bearer ' + sToken);
-        hr.setTimeout(60000);
-        hr.setEndpoint(endPoint);
-        hr.setMethod('GET');
-        HttpResponse r = h.send(hr);
+        try{        
+            
+            String toolingSOQL='/services/data/v36.0/tooling/query?q=Select+Id,Name,TableEnumOrId,createdById,lastModifiedById+From+WorkflowRule';
+            String baseURL=URL.getSalesforceBaseUrl().toExternalForm();
+            String endPoint=baseURL+toolingSOQL;
+    
+            Http h = new Http();
+            HttpRequest hr = new HttpRequest();
+            hr.setHeader('Authorization', 'Bearer ' + sToken);
+            hr.setTimeout(60000);
+            hr.setHeader('Content-Type', 'application/json');
+            hr.setHeader('Accept', 'application/json'); 
+            hr.setEndpoint(endPoint);
+            hr.setMethod('GET');
+            HttpResponse r = h.send(hr);
 
-        String body= r.getBody();
-       // System.debug('ResponseBody:::'+body);
+            if(r.getStatusCode() == 200){
+                body= r.getBody();                
+            } else {
+                throw new CalloutException(r.getBody());
+            }
+        } catch(Exception ex){
+            throw ex;
+        }        
 
         if(!String.isBlank(body)){
-            newsJsonData = (Map<String, Object>)JSON.deserializeUntyped(body);
+            flowJsonData = (Map<String, Object>)JSON.deserializeUntyped(body);
+            System.debug('ResponseBody:::'+flowJsonData);
         }
-        if(!newsJsonData.isEmpty()){
-            return newsJsonData;
+        if(!flowJsonData.isEmpty()){
+            return flowJsonData;
         } else {
             return null;
         }

@@ -100,13 +100,13 @@ export default class CronDetailApp extends LightningElement {
       this.processing = false;
     }
 
-    if (data && !Object.keys(data).length) {
-      this.workflowData = [];
-    } else if (data) {
-      this.workflowData = [];
+    this.workflowData = [];
+
+    if (data) {
+      let userflowData = [];
 
       data.records.forEach((item) => {
-        this.workflowData.push({
+        userflowData.push({
           id: item.Id,
           name: item.Name,
           whereItUsed: item.TableEnumOrId,
@@ -116,12 +116,17 @@ export default class CronDetailApp extends LightningElement {
         });
       });
 
-      //filter
-      this.workflowData = this.workflowData.filter(
-        (p) => p.lastModifiedById === this.selectedUser
-      );
+      if (userflowData.length) {
+        //filter
+
+        let userflow = userflowData.filter(
+          (p) => p.lastModifiedById === this.selectedUser
+        );
+
+        this.workflowData = userflow || [];
+      }
     } else if (error) {
-      console.log("error");
+      console.log("GetWorkflowRuleList", error);
     }
   }
 
@@ -151,7 +156,7 @@ export default class CronDetailApp extends LightningElement {
 
       // console.log("retrivedUserApprovalTaskDetailList", this.approvalData);
     } else if (error) {
-      console.log("error");
+      console.log("GetUserApprovalTaskDetailList", error);
     }
   }
 

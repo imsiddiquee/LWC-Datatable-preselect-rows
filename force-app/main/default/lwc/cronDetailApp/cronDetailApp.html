@@ -29,33 +29,75 @@
       </div>
     </template>
 
+    <!--Job summary jobs-->
+
     <div class="slds-var-m-around_medium">
       <div class="slds-card_boundary slds-var-m-around_xxx-small">
         <lightning-card>
-          <h3 slot="title">Job summary</h3>
+          <h3 slot="title" class="slds-text-color_success">Job summary</h3>
 
           <lightning-layout horizontal-align="spread">
-            <lightning-layout-item padding="around-small">
+            <lightning-layout-item
+              padding="around-small"
+              class="
+                slds-icon-custom-custom106
+                slds-text-align_center
+                slds-var-m-around_xxx-small
+                slds-box slds-box_small
+              "
+            >
               <p>Cron Job</p>
               <lightning-badge label={cronData.length}></lightning-badge>
             </lightning-layout-item>
 
-            <lightning-layout-item padding="around-small">
+            <lightning-layout-item
+              padding="around-small"
+              class="
+                slds-icon-custom-custom8
+                slds-text-align_center
+                slds-var-m-around_xxx-small
+                slds-box slds-box_small
+              "
+            >
               <p>Flow/P-builder Job</p>
               <lightning-badge label={flowData.length}></lightning-badge>
             </lightning-layout-item>
 
-            <lightning-layout-item padding="around-small">
+            <lightning-layout-item
+              padding="around-small"
+              class="
+                slds-icon-custom-custom17
+                slds-text-align_center
+                slds-var-m-around_xxx-small
+                slds-box slds-box_small
+              "
+            >
               <p>Approval Job</p>
               <lightning-badge label={approvalData.length}></lightning-badge>
             </lightning-layout-item>
 
-            <lightning-layout-item padding="around-small">
+            <lightning-layout-item
+              padding="around-small"
+              class="
+                slds-icon-custom-custom10
+                slds-text-align_center
+                slds-var-m-around_xxx-small
+                slds-box slds-box_small
+              "
+            >
               <p>Workflow Job</p>
               <lightning-badge label={workflowData.length}></lightning-badge>
             </lightning-layout-item>
 
-            <lightning-layout-item padding="around-small">
+            <lightning-layout-item
+              padding="around-small"
+              class="
+                slds-icon-custom-custom90
+                slds-text-align_center
+                slds-var-m-around_xxx-small
+                slds-box slds-box_small
+              "
+            >
               <p>Apex Job</p>
               <lightning-badge label={apexJobData.length}></lightning-badge>
             </lightning-layout-item>
@@ -63,6 +105,8 @@
         </lightning-card>
       </div>
     </div>
+
+    <!--Job summary jobs-->
 
     <div class="slds-var-m-around_medium">
       <template if:true={cronData.length}>
