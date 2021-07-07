@@ -92,3 +92,12 @@ Process-Builder
 Flow
 	ProcessType==>Flow==> Flow==>builder ==>Flow Builder
 	ProcessType==>AutoLaunchedFlow==> Flow==>builder ==>Flow Builder
+
+trigger class stacks
+
+1)TriggerInterface
+2)ContactTrigger //need to configure
+3)TriggerDispatcher 
+4)ContactTriggerHandler//need to configure
+5)ContactTriggerHelper//need to configure
+6)TransactionLogHandler
