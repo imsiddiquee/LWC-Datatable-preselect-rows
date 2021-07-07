@@ -12,6 +12,7 @@ import GetWorkflowRuleList from "@salesforce/apex/CronTriggerController.GetWorkf
  * dependent on components are
  * reusableDataTable==>for grid
  * paginator==>grid pagination
+ * confirmationDialog==>confirmation message
  * utils==>export to csv
  * confirmation dialog
  */
@@ -22,7 +23,7 @@ const CRONCOLUMNS = [
     type: "button-icon",
     initialWidth: 75,
     typeAttributes: {
-      iconName: "action:delete",
+      iconName: "utility:delete",
       title: "Abort",
       variant: "border-filled",
       alternativeText: "Abort"
@@ -324,5 +325,11 @@ export default class CronDetailApp extends LightningElement {
     // this.cronData = [];
     // this.apexJobData = [];
     this.selectedUser = "";
+  }
+
+  refreshFromChild(event) {
+    this.selectedUser = "";
+    console.log("refresh from child");
+    this.selectedUser = event.payload;
   }
 }

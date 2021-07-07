@@ -50,4 +50,16 @@
       </div>
     </lightning-card>
   </div>
+
+  <c-confirmation-dialog
+    title="Confirmation Title"
+    message={confirmationDisplayMessage}
+    confirm-label="Yes"
+    cancel-label="No"
+    visible={isDialogVisible}
+    original-message={originalMessage}
+    name="confirmModal"
+    onmodalaction={handleConfirmationClick}
+  >
+  </c-confirmation-dialog>
 </template>

@@ -1,5 +1,6 @@
 import { LightningElement, api, track } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import { refreshApex } from "@salesforce/apex";
 import { exportCSVFileWithDynamicHeader } from "c/utils";
 import AbortTheSelectedJob from "@salesforce/apex/CronTriggerController.AbortTheSelectedJob";
 
@@ -22,10 +23,12 @@ export default class ReusableDataTable extends LightningElement {
 
   @api
   get sourceData() {
+    debugger;
     return this.data;
   }
 
   set sourceData(value) {
+    debugger;
     this.items = value;
     this.totalRecountCount = value.length; //here it is 23
     this.totalPage = Math.ceil(this.totalRecountCount / this.pageSize); //here it is 5
@@ -37,6 +40,17 @@ export default class ReusableDataTable extends LightningElement {
     this.endingRecord = this.pageSize;
 
     // this.error = undefined;
+  }
+
+  //confirmation message
+
+  isDialogVisible = false;
+  originalMessage;
+  selectedJobId;
+  selectedUserId;
+
+  get confirmationDisplayMessage() {
+    return `Do you want to proceed job ${this.selectedJobId}?`;
   }
 
   //clicking on previous button this method will be called
@@ -107,10 +121,10 @@ export default class ReusableDataTable extends LightningElement {
   handleRowAction(event) {
     const row = event.detail.row;
     console.log(row);
-    this.abortTheJob(row.id);
+    this.abortTheJob(row.id, row.ownerId);
   }
 
-  abortTheJob(jobId) {
+  abortTheJob(jobId, ownerId) {
     // AbortTheSelectedJob({ jobId: jobId })
     //   .then((response) => {
     //     console.log("successfully job abort", response);
@@ -118,17 +132,70 @@ export default class ReusableDataTable extends LightningElement {
     //   .catch((error) => {
     //     console.log("failed job abort", error);
     //   });
+    //this.showToastMessage(jobId);
 
-    this.showToastMessage(jobId);
+    //let datafromchild = this.template.querySelector("lightning-datatable");
+
+    this.selectedJobId = jobId;
+    this.selectedUserId = ownerId;
+    this.isDialogVisible = true;
   }
 
-  showToastMessage(jobid) {
+  showToastMessage(messageVariant, messageTitle) {
     const toastEvnt = new ShowToastEvent({
-      title: `Successfully job ${jobid} is abort.`,
+      title: messageTitle,
       message: this.msg,
-      variant: "success",
+      variant: messageVariant,
       mode: "dismissable"
     });
     this.dispatchEvent(toastEvnt);
+  }
+
+  handleConfirmationClick(event) {
+    if (event.target.name === "confirmModal") {
+      //when user clicks outside of the dialog area, the event is dispatched with detail value  as 1
+      if (event.detail !== 1) {
+        //you can do some custom logic here based on your scenario
+        if (event.detail.status === "confirm") {
+          /**
+           * below code abort jobs, so off the code for safety.
+           */
+          /*    
+                 AbortTheSelectedJob({ jobId: this.selectedJobId })
+            .then((response) => {
+              console.log("successfully job abort", response);
+              this.showToastMessage(
+                "success",
+                `Successfully job ${this.selectedJobId} is abort.`
+              );
+              this.handleRefresh();
+            })
+            .catch((error) => {
+              console.log("failed job abort", error);
+              this.isDialogVisible = false;
+            });                
+          */
+
+          //display toast message
+          this.showToastMessage(
+            "success",
+            `Successfully job ${this.selectedJobId} is abort.`
+          );
+
+          // after abort refresh the grid
+        } else if (event.detail.status === "cancel") {
+          this.showToastMessage("info", `Process cancel successfully`);
+        }
+      }
+
+      //hides the component
+      this.isDialogVisible = false;
+    }
+  }
+
+  handleRefresh() {
+    this.dispatchEvent(
+      new CustomEvent("refreshrecords", { payload: this.selectedUserId })
+    );
   }
 }
