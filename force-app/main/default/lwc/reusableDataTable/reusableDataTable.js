@@ -160,8 +160,8 @@ export default class ReusableDataTable extends LightningElement {
           /**
            * below code abort jobs, so off the code for safety.
            */
-          /*    
-                 AbortTheSelectedJob({ jobId: this.selectedJobId })
+          /*
+          AbortTheSelectedJob({ jobId: this.selectedJobId })
             .then((response) => {
               console.log("successfully job abort", response);
               this.showToastMessage(
@@ -173,10 +173,11 @@ export default class ReusableDataTable extends LightningElement {
             .catch((error) => {
               console.log("failed job abort", error);
               this.isDialogVisible = false;
-            });                
-          */
+            });
 
+*/
           //display toast message
+
           this.showToastMessage(
             "success",
             `Successfully job ${this.selectedJobId} is abort.`
