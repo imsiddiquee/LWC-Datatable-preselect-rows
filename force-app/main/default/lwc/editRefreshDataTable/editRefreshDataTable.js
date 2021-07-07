@@ -13,6 +13,7 @@ import GetContactList from "@salesforce/apex/EditRefreshContactController.GetCon
  *
  * how to create a list of promise.
  * how to refresh dataTable.
+ * https://www.youtube.com/watch?v=OgkE8zNJxr0&ab_channel=salesforcetroop
  * */
 
 const COLUMNS = [
