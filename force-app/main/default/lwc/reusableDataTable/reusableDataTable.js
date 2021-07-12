@@ -23,12 +23,10 @@ export default class ReusableDataTable extends LightningElement {
 
   @api
   get sourceData() {
-    debugger;
     return this.data;
   }
 
   set sourceData(value) {
-    debugger;
     this.items = value;
     this.totalRecountCount = value.length; //here it is 23
     this.totalPage = Math.ceil(this.totalRecountCount / this.pageSize); //here it is 5
@@ -151,6 +149,22 @@ export default class ReusableDataTable extends LightningElement {
     this.dispatchEvent(toastEvnt);
   }
 
+  abotJob() {
+    AbortTheSelectedJob({ jobId: this.selectedJobId })
+      .then((response) => {
+        console.log("successfully job abort", response);
+        this.showToastMessage(
+          "success",
+          `Successfully job ${this.selectedJobId} is abort.`
+        );
+        this.handleRefresh();
+      })
+      .catch((error) => {
+        console.log("failed job abort", error);
+        this.isDialogVisible = false;
+      });
+  }
+
   handleConfirmationClick(event) {
     if (event.target.name === "confirmModal") {
       //when user clicks outside of the dialog area, the event is dispatched with detail value  as 1
@@ -161,27 +175,15 @@ export default class ReusableDataTable extends LightningElement {
            * below code abort jobs, so off the code for safety.
            */
           /*
-          AbortTheSelectedJob({ jobId: this.selectedJobId })
-            .then((response) => {
-              console.log("successfully job abort", response);
-              this.showToastMessage(
-                "success",
-                `Successfully job ${this.selectedJobId} is abort.`
-              );
-              this.handleRefresh();
-            })
-            .catch((error) => {
-              console.log("failed job abort", error);
-              this.isDialogVisible = false;
-            });
+           */
+          this.abotJob();
 
-*/
           //display toast message
 
-          this.showToastMessage(
-            "success",
-            `Successfully job ${this.selectedJobId} is abort.`
-          );
+          // this.showToastMessage(
+          //   "success",
+          //   `Successfully job ${this.selectedJobId} is abort.`
+          // );
 
           // after abort refresh the grid
         } else if (event.detail.status === "cancel") {

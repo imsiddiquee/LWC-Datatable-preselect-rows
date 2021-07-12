@@ -8,12 +8,16 @@ import GetUserApprovalTaskDetailList from "@salesforce/apex/CronTriggerControlle
 import GetWorkflowRuleList from "@salesforce/apex/CronTriggerController.GetWorkflowRuleList";
 
 /**
+ * PageSession.page==>visual-force page
+ * SessionHelper==> apex class
  * CronTriggerController==>apex controller
  * dependent on components are
- * reusableDataTable==>for grid
- * paginator==>grid pagination
  * confirmationDialog==>confirmation message
+ * paginator==>grid pagination
  * utils==>export to csv
+ * reusableDataTable==>for grid
+ 
+ 
  * confirmation dialog
  */
 

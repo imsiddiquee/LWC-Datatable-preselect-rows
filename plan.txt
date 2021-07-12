@@ -93,7 +93,9 @@ Flow
 	ProcessType==>Flow==> Flow==>builder ==>Flow Builder
 	ProcessType==>AutoLaunchedFlow==> Flow==>builder ==>Flow Builder
 
-trigger class stacks
+
+trigger class stacks/framework
+https://www.youtube.com/watch?v=BUEvi7exEJ8&t=510s&ab_channel=SFDCPanther
 
 1)TriggerInterface
 2)ContactTrigger //need to configure
@@ -101,3 +103,11 @@ trigger class stacks
 4)ContactTriggerHandler//need to configure
 5)ContactTriggerHelper//need to configure
 6)TransactionLogHandler
+
+
+SOQL enforce security
+    SELECT Name,Industry
+    FROM Account
+    WITH SECURITY_ENFORCED
+    Order by Name
+    
