@@ -111,3 +111,67 @@ SOQL enforce security
     WITH SECURITY_ENFORCED
     Order by Name
     
+APEX primitive data types
+    Boolean isActive=true;
+    Integer num=0;
+    Decimal price=100.50;
+    String s='Hello world';
+    ID id ='0124445';
+
+    List to MAP
+        List<Account> accList=[Select Id,Name from Account];
+        Map<Id,Account> idToAccountMap=new Map<Id,Account>(accList);
+        Map<Id,List<Account>> idToAccountMap=new Map<Id,List<Account>>(accList);
+    enum is an abstract data type   
+        public enum Weekdays {MON,TUE,WED,THU,FRI,SAT,SUN};
+        Weekdays w=Weekdays.MON;
+        if(w==Weekdays.MON)
+            return w;
+    Set methods
+        Set<String> stringSet=new Set<String>();
+        Set<Id> stringSet=new Set<Id>();
+            add(setElement)
+            addAll(fromList)/addAll(fromSet)
+            clear()
+            clone()
+            contains(setElement)
+            containsAll(listToCompare)/containsAll(setToCompare)
+            equals(set2)
+            isEmpty()
+            remove(setElement)
+            removeAll(listOfElementsToRemove)/removeAll(setOfElementsToRemove)==>remove two set common elements
+            retainAll(listOfElementsToRetain)/retainAll(setOfElementsToRetain)==>get two set common elements
+            size()
+    Map
+        Map<Integer,String> intToStrMap=new Map<Integer,String>();
+        Map<Id,Account> acIdMap=new Map<Id,Account>([SELECT ID,Name FROM Account limit 2]);
+
+            put(key,value)
+            putAll(fromMap)/putAll(sObjectArray)
+            remove(key)
+            size()
+            values()==>get all values
+            clear()
+            clone()
+            containsKey(key)
+            equals(map2)
+            get(key)
+            isEmpty()
+            keySet()==>get all keys
+
+    sObject
+        Account acc=new Account(Name='Test',Phone='123456');
+
+        Account acc =new Account();
+        acc.Name='';
+        acc.Phone='';
+
+        Student__c std=new Student__c();
+        std.Name='';
+        std.Fee__c=100;
+
+        sObject obj;
+        obj=new Account(Name='Test',Phone='123456');
+        Account acc=(Account)obj; //casting
+        
+
