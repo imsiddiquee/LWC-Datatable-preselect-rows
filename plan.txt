@@ -110,6 +110,56 @@ SOQL enforce security
     FROM Account
     WITH SECURITY_ENFORCED
     Order by Name
+
+    like operator
+        Select count() from Account where Name like 'Tech%'
+    lookup query from parent
+        standard object
+            1)as an example account and contact, account==>parent,contact==>child
+            2)go to child object get the 'Child relationShip name'==>Contacts
+            3)[Select Id,(Select Id,Name from Contacts) from Account]
+            4)for (Account acc:accList)
+            {
+                for(Contact con:Contacts)
+                {
+                    //get related contacts
+                }
+            }
+
+        custom object
+            1)as an example student and book, student==>parent,book==>child
+            2)go to child object get the 'Child relationShip name'==>Books
+            3)[Select Id,(Select Id,Name from Books__r) from Student__c]
+            4)for (Student__c stu:stuList)
+            {
+                for(Book book:Books__r)
+                {
+                    //get related books
+                }
+            }
+
+    lookup query from child
+        standard object
+            1)as an example account and contact, account==>parent,contact==>child
+            2)go to child object get the 'Child relationShip name'==>Contacts
+            3)[select Id,Name,Account.Name from contact]
+            4)for (Contact con:contactList)
+            {
+               string accountName=con.Account.Name;
+            }
+
+        custom object
+            1)as an example student and book, student==>parent,book==>child
+            2)go to child object get the 'Child relationShip name'==>Books
+            3)[Select Id,Student__r.Name,Student__r.RollNumber__c from Book__c]
+            4)for (Book__c book:bookList)
+            {
+                string studentName = book.Student__r.Name;
+                string roolNumber = book.Student__r.RollNumber__c ;
+            }
+
+
+
     
 APEX primitive data types
     Boolean isActive=true;
@@ -174,4 +224,25 @@ APEX primitive data types
         obj=new Account(Name='Test',Phone='123456');
         Account acc=(Account)obj; //casting
         
+DML operation
+    DML statement
+        INSERT
+        UPDATE
+        DELETE
+    DataBase class method
+    https://www.youtube.com/watch?v=yCp07mvWqfI&list=PL-gW8Fj5TGro_a8irvZUZUKJdEpWIGMB8&index=8&ab_channel=SanjayGupta
+        
+        Database.SaveResult[] srList = Database.insert(recordList,false);
+               allOrNone parameter= true,false,(false==>partial save,true==>need to full save)
+        
+        Database.UpsertResult resutls[]= Database.upsert(recordList,false);
+        Database.DeleteResult resutls[]= Database.delete(recordList,false);
+    
+    Default allOrNone is true, all will throw an exception if a failure occurs.
+        INSERT contactList;
+        or
+        Database.INSERT(contactList);
+        or
+        Database.insert(contactList,true);
+
 
