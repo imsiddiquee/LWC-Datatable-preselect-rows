@@ -1,4 +1,36 @@
-public with sharing class AccountTriggerHandler {
+public with sharing class AccountTriggerHandler implements TriggerInterface{
+
+    public static void beforeInsert(List<sObject> newRecordsList){
+        System.debug('beforeInsert');
+        AccountTriggerHelper.copyBillingToShipping(newRecordsList);
+        
+  }
+
+  public static void afterInsert(List<sObject> newRecordsList , Map<Id, sObject> newRecordsMap){      
+  }
+
+  public static void beforeUpdate(Map<Id, sObject> newRecordsMap, Map<Id, sObject> oldRecordsMap){
+      System.debug('beforeUpdate');
+    AccountTriggerHelper.copyBillingToShipping((List<Account>)newRecordsMap.values());
+  }
+
+  public static void afterUpdate(Map<Id, sObject> newRecordsMap,  Map<Id, sObject> oldRecordsMap){
+    
+  }
+        
+  public static void beforeDelete(List<sObject> oldRecordsList , Map<Id, sObject> oldRecordsMap){
+      
+  }
+
+  public static void afterDelete(Map<Id, sObject> oldRecordsMap){
+    
+  }
+  
+  public static void afterUnDelete(List<sObject> newRecordsList , Map<Id, sObject> newRecordsMap) {
+    
+  }
+
+    /*
     public static void Before_Insert_UpdateRating(List<Account> newList)
     {
         for (Account acc : newList) {
@@ -157,4 +189,5 @@ public with sharing class AccountTriggerHandler {
             update empToBeUpdated;
         }
     }
+     */
 }

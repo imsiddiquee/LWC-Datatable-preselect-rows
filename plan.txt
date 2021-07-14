@@ -245,4 +245,18 @@ DML operation
         or
         Database.insert(contactList,true);
 
+InvocableMethod can be used in flow and process-builder
+    @InvocableMethod
+    public static List<String> UpdateAccountName()
+    {
 
+    }
+
+
+apex test class
+    https://www.youtube.com/watch?v=RwrA6Y7Bvf0&list=PL-gW8Fj5TGro_a8irvZUZUKJdEpWIGMB8&index=1&ab_channel=SanjayGuptaSanjayGupta
+    https://github.com/rahulmalhotra/SFDC-Integration-Tutorial/blob/restcallouttest/force-app/main/default/classes/SFDCStopCalloutTest.cls
+apex test class for api callout
+    1)create mock class
+    2)create test class
+    
