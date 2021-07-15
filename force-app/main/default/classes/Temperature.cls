@@ -47,4 +47,32 @@ public with sharing class Temperature {
             update accToBeUpdated;
         }
     }
+
+    public static List<Account> dynamicSearchAccountsByName(String searchKey)
+    {
+        List<Account> accList=new List<Account>();
+        Set<Id> accIdSet=new Set<Id>();
+
+        String searchWord='%'+searchKey+'%';
+
+        if(!String.isBlank(searchKey))
+        {
+            for (Account acc : [Select Id,Name from Account where Name like: searchWord]) {
+                if(!accIdSet.contains(acc.Id))
+                {
+                    accList.add(acc);
+                    accIdSet.add(acc.Id);     
+                }               
+                
+            }
+        }
+
+        if(!accList.isEmpty())
+        {
+            return accList;
+        }
+
+        return new List<Account>();
+
+    }
 }

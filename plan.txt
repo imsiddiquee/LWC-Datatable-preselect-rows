@@ -261,4 +261,12 @@ apex test class for api callout
     https://github.com/rahulmalhotra/SFDC-Integration-Tutorial/blob/restcallouttest/force-app/main/default/classes/SFDCStopCalloutTest.cls
     1)create mock class
     2)create test class
+
+apex naming convention
+    variable
+            accIdSet
+            accIdMap
+            accList
+            deletedAccList
+            deletedAcc
     
