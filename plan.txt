@@ -270,3 +270,35 @@ apex naming convention
             deletedAccList
             deletedAcc
     
+lwc lifecycle hooks
+    consttructor(When  component initialized)
+
+        flow==>parent to child
+        elements==> can not access
+        @api value==> can not access
+        @track value==>can access
+
+    connectedcallback(When component inserted into dom)
+        flow==>parent to child
+        fire==>more than 1
+
+    disConnectedcallback(When component is removed from dom)
+        flow==>parent to child
+        fire==>more than 1
+
+    render
+
+    rendercallback(used to update user interface)
+        flow==>parent to child
+        fire==>more than 1
+
+    errorCallBack(error,stack)
+
+
+    apex http verbs
+        get,delete==>don't have request body, pass data on parameter
+        post,put,patch==>have request body.
+        callout==>create salesforce api, any one can access the api.
+
+
+    
