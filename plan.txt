@@ -1,6 +1,6 @@
 Org::report_pg
 imsiddiquee@cunning-goat-hwvix2.com
-tigerhunter2
+tigerhunter3
 
 local development server or scratch org
     //first command for local developer server
@@ -104,6 +104,15 @@ https://www.youtube.com/watch?v=BUEvi7exEJ8&t=510s&ab_channel=SFDCPanther
 5)ContactTriggerHelper//need to configure
 6)TransactionLogHandler
 
+trigger error message
+	for(Contact conObj:trigger.Old)
+	{
+		if(conObj.IsPrimary__c)
+			{
+				conObj.addError('Primary contact cannot be deleted!')
+			}
+	}	
+
 
 SOQL enforce security
     SELECT Name,Industry
@@ -157,6 +166,36 @@ SOQL enforce security
                 string studentName = book.Student__r.Name;
                 string roolNumber = book.Student__r.RollNumber__c ;
             }
+
+SOQL relationship queries
+resouce
+https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_conditionexpression.htm
+    parent		child
+    school		student
+    company		contact
+		
+		parent to child query
+			First need to collect child object relationship name, so we need to view the child object get the lookup relationship name.
+				Chidl relationship name ==> Contacts
+					SELECT Name,Phone,Industry,Rating,(SELECT Name,phone from Contacts where name like 'A%') From Account where rating ='Hot'
+				
+			custom object
+				Chidl relationship name ==> Students
+					Select Name,City__c,online_Class__c, (Select Name, Class__c from Students__r where Class__c='6') from School__c where city_-c='Delhi'
+						need to check child relationship name with __r,for custom object it's mandatory
+				
+			 
+	
+		child to parent query
+			First need to collect child object field name , so we need to view the child object get the field name.
+				Field Name ==> Account
+					Select Name,phone,email,Account.Name,Account.Rating,Account.Industry From contact where Account.Rating='Hot' AND NAME like 'A%'
+		
+		
+			custom object
+				Field Name ==> school
+					Select Name,School__c,Class__c,Fees__c,School__r.Name,School__r.City__c From Student__c
+						need to check parent field-name used process
 
 
 
@@ -302,3 +341,9 @@ lwc lifecycle hooks
 
 
     
+SOQL check null
+	Null check condition for User object SOQL query
+		User singleUser; // is null
+		for(User record: [SELECT id,name,alias FROM user WHERE alias = 'random' AND name = 'Random Name' LIMIT 1]) {
+		  singleUser = record;
+		}

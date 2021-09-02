@@ -1,0 +1,11 @@
+.slds-spinner_container {
+  content: "Please wait.....!";
+  text-align: center;
+  z-index: 10000;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.002);
+}
+
+.spinner-hidden {
+  display: none;
+}
