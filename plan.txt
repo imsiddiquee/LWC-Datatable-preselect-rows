@@ -347,3 +347,7 @@ SOQL check null
 		for(User record: [SELECT id,name,alias FROM user WHERE alias = 'random' AND name = 'Random Name' LIMIT 1]) {
 		  singleUser = record;
 		}
+
+SOQL
+    compare datetime with data==>format the datetime to date then compare
+        https://salesforce.stackexchange.com/questions/37396/is-it-possible-to-compare-datetime-and-date-in-soql
