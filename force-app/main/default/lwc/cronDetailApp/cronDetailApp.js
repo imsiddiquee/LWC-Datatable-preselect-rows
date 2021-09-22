@@ -7,6 +7,7 @@ import GetUserFlowAndProcessBuilderDetailList from "@salesforce/apex/CronTrigger
 import GetUserApprovalTaskDetailList from "@salesforce/apex/CronTriggerController.GetUserApprovalTaskDetailList";
 import GetWorkflowRuleList from "@salesforce/apex/CronTriggerController.GetWorkflowRuleList";
 import getUserDetail from "@salesforce/apex/CronTriggerController.getUserDetail";
+import getUserReports from "@salesforce/apex/CronTriggerController.getUserReports";
 
 /**
  * PageSession.page==>visual-force page
@@ -81,6 +82,17 @@ const WORKFLOWRULECOLUMNS = [
   { label: "Owner", fieldName: "lastModifiedById" }
 ];
 
+const REPORTCOLUMNS = [
+  { label: "Report", fieldName: "name" },
+  { label: "Owner", fieldName: "owner" },
+  { label: "Created By", fieldName: "createdBy" },
+  { label: "Created Date", fieldName: "createdDate" },
+  { label: "Last Modified By", fieldName: "lastModifiedBy" },
+  { label: "Last Modified Date", fieldName: "lastModifiedDate" },
+  { label: "Last Run Date", fieldName: "lastRunDate" },
+  { label: "Last Viewed Date", fieldName: "lastViewedDate" }
+];
+
 export default class CronDetailApp extends LightningElement {
   @api componentTitle = "User related jobs";
 
@@ -89,6 +101,7 @@ export default class CronDetailApp extends LightningElement {
   flowData = [];
   cronData = [];
   apexJobData = [];
+  reportData = [];
   userOptionsList;
   selectedUser;
   userDetail = {};
@@ -97,6 +110,7 @@ export default class CronDetailApp extends LightningElement {
   flowColumns = FLOWCOLUMNS;
   approvalColumns = APPROVALCOLUMNS;
   workflowColumns = WORKFLOWRULECOLUMNS;
+  reportColumns = REPORTCOLUMNS;
   userId = "";
   JOBTYPEMAP = {
     1: { jobName: "Data Export" },
@@ -111,6 +125,7 @@ export default class CronDetailApp extends LightningElement {
 
   processing = true;
 
+  //process user details
   @wire(getUserDetail, { userId: "$selectedUser" })
   retrivedUserDetail(response) {
     let data = response.data;
@@ -339,6 +354,23 @@ export default class CronDetailApp extends LightningElement {
       });
     } else if (error) {
       console.log("error");
+    }
+  }
+
+  //process reports
+  @wire(getUserReports, { userId: "$selectedUser" })
+  retrivedUserReports(response) {
+    let data = response.data;
+    let error = response.error;
+
+    if (data || error) {
+      this.processing = false;
+    }
+
+    if (data) {
+      this.reportData = data;
+    } else if (error) {
+      console.log("getUserReports");
     }
   }
 

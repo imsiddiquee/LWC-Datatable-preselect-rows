@@ -107,6 +107,19 @@
               <p>Apex Job</p>
               <lightning-badge label={apexJobData.length}></lightning-badge>
             </lightning-layout-item>
+
+            <lightning-layout-item
+              padding="around-small"
+              class="
+                slds-icon-custom-custom51
+                slds-text-align_center
+                slds-var-m-around_xxx-small
+                slds-box slds-box_small
+              "
+            >
+              <p>Reports</p>
+              <lightning-badge label={reportData.length}></lightning-badge>
+            </lightning-layout-item>
           </lightning-layout>
         </lightning-card>
       </div>
@@ -160,6 +173,16 @@
           card-title="Apex Job list"
           source-data={apexJobData}
           columns={apexColumns}
+        ></c-reusable-data-table>
+      </template>
+    </div>
+
+    <div class="slds-var-m-around_medium">
+      <template if:true={reportData.length}>
+        <c-reusable-data-table
+          card-title="Report list"
+          source-data={reportData}
+          columns={reportColumns}
         ></c-reusable-data-table>
       </template>
     </div>
