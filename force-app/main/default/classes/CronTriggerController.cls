@@ -17,6 +17,49 @@ public with sharing class CronTriggerController {
         }
      
     }
+
+    @AuraEnabled(cacheable=true)
+    public static UserDetailWrapper getUserDetail(String userId){
+        try {
+
+            List<UserDetailWrapper> details=new List<UserDetailWrapper>();
+
+            for(User userObj:
+                [
+                    SELECT 
+                    Id,
+                    Name,             
+                    Title,                        
+                    ProfileId,
+                    Profile.Name,
+                    Profile.UserLicenseId, 
+                    Profile.UserLicense.Name,
+                    UserRoleId,
+                    UserRole.Name,
+                    UserType,
+                    IsActive,
+                    format(LastLoginDate)
+                    FROM User 
+                    WHERE Id=: userId
+                ]
+            )
+            {
+    
+                details.add(new UserDetailWrapper(userObj) );
+            }
+
+            if (details.size()>0) {                
+                return details[0];    
+            }
+           
+            return null;
+            
+
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+     
+    }
     
     @AuraEnabled(cacheable=true)
     public static List<CronTrigger> GetUserCronJobDetailList(String userId){
@@ -175,6 +218,70 @@ public with sharing class CronTriggerController {
             //throw new AuraHandledException(e.getMessage());
         }
         return false;
+    }
+
+    public class UserDetailWrapper
+    {
+
+        // Id,
+        // Name,             
+        // Title,                        
+        // ProfileId,
+        // Profile.Name,
+        // Profile.UserLicenseId, 
+        // Profile.UserLicense.Name,
+        // UserRoleId,
+        // UserRole.Name,
+        // UserType 
+        // IsActive,
+        // LastLoginDate     
+       
+        @AuraEnabled       
+        public String userId {get;set;}
+        @AuraEnabled 
+        public String name{get;set;}
+        @AuraEnabled 
+        public String title{get;set;}
+        @AuraEnabled 
+        public String  profileId{get;set;}
+        @AuraEnabled 
+        public String profileName{get;set;}
+        @AuraEnabled 
+        public String userLicenseId{get;set;}
+        @AuraEnabled 
+        public String userLicense{get;set;}
+        @AuraEnabled 
+        public String isActive{get;set;}
+        @AuraEnabled 
+        public String lastLoginDate{get;set;}
+        @AuraEnabled 
+        public String userRole{get;set;}
+        @AuraEnabled 
+        public String userRoleId{get;set;}
+        @AuraEnabled 
+        public String userType{get;set;}
+
+        UserDetailWrapper()
+        {
+
+        }
+
+        UserDetailWrapper(User currentUser)
+        {
+            this.userId=currentUser.Id;
+            this.name=currentUser.Name;
+            this.title=currentUser.Title;
+            this.profileId=currentUser.ProfileId;
+            this.profileName=currentUser.Profile.Name;
+            this.userLicenseId=currentUser.Profile.UserLicenseId;
+            this.userLicense=currentUser.Profile.UserLicense.Name ;
+            this.userRoleId=currentUser.UserRoleId;
+            this.userRole=currentUser.UserRole.Name;
+            this.userType=currentUser.UserType;
+            this.isActive=String.valueOf(currentUser.IsActive) ;
+            this.lastLoginDate=String.valueOf(currentUser.LastLoginDate) ;
+        }
+
     }
     
 

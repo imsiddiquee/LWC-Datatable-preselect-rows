@@ -24,6 +24,10 @@ apply css on lightning card
         </lightning-card>
     </template>
 
+if in html
+    <template if:true={items.length}>
+    </template>
+
 for-each in html
 
           <template for:each={todoTasks} for:item="todoTask">

@@ -25,9 +25,15 @@
           options={userOptionsList}
           onchange={handleUserChange}
         ></lightning-combobox>
-        <p>Selected User id :<b>{selectedUser}</b></p>
       </div>
     </template>
+
+    <!--Selected user details-->
+    <div class="slds-var-m-around_medium">
+      <template if:true={selectedUser}>
+        <c-user-detail user-detail={userDetail}> </c-user-detail>
+      </template>
+    </div>
 
     <!--Job summary jobs-->
 

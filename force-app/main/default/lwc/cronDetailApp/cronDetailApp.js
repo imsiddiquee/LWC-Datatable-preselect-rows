@@ -6,6 +6,7 @@ import GetApexJobsCreatedByUser from "@salesforce/apex/CronTriggerController.Get
 import GetUserFlowAndProcessBuilderDetailList from "@salesforce/apex/CronTriggerController.GetUserFlowAndProcessBuilderDetailList";
 import GetUserApprovalTaskDetailList from "@salesforce/apex/CronTriggerController.GetUserApprovalTaskDetailList";
 import GetWorkflowRuleList from "@salesforce/apex/CronTriggerController.GetWorkflowRuleList";
+import getUserDetail from "@salesforce/apex/CronTriggerController.getUserDetail";
 
 /**
  * PageSession.page==>visual-force page
@@ -13,6 +14,7 @@ import GetWorkflowRuleList from "@salesforce/apex/CronTriggerController.GetWorkf
  * CronTriggerController==>apex controller
  * dependent on components are
  * confirmationDialog==>confirmation message
+ * userDetail
  * paginator==>grid pagination
  * utils==>export to csv
  * reusableDataTable==>for grid
@@ -89,6 +91,7 @@ export default class CronDetailApp extends LightningElement {
   apexJobData = [];
   userOptionsList;
   selectedUser;
+  userDetail = {};
   cronColumns = CRONCOLUMNS;
   apexColumns = APEXJObSCOLUMNS;
   flowColumns = FLOWCOLUMNS;
@@ -107,6 +110,23 @@ export default class CronDetailApp extends LightningElement {
   };
 
   processing = true;
+
+  @wire(getUserDetail, { userId: "$selectedUser" })
+  retrivedUserDetail(response) {
+    let data = response.data;
+    let error = response.error;
+
+    if (data || error) {
+      this.processing = false;
+    }
+    if (data) {
+      this.userDetail = data;
+      //console.log("user detail", JSON.stringify(data));
+      console.log(data);
+    } else if (error) {
+      console.log("getUserDetail", error);
+    }
+  }
 
   @wire(GetWorkflowRuleList, { userId: "$selectedUser" })
   retrivedWorkflowRuleList(response) {
