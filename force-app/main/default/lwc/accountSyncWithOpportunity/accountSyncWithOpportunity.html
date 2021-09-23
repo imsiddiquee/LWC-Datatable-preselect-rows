@@ -4,24 +4,43 @@
     title="Latest Opportunity related Accounts"
     icon-name="standard:opportunity"
   >
-    <lightning-button-icon
-      icon-name="standard:loop"
-      variant="border-filled"
-      alternative-text="Sync"
-      slot="actions"
-      onclick={handleSync}
-    ></lightning-button-icon>
-
-    Sync message {syncMessage}
-
-    <div class="slds-var-m-around_medium">
-      <template if:true={accountData.length}>
-        <c-reusable-data-table
-          card-title="Latest Opp related Account list"
-          source-data={accountData}
-          columns={accountColumns}
-        ></c-reusable-data-table>
-      </template>
+    <div class="slds-var-p-horizontal_small">
+      <lightning-button
+        variant="brand"
+        label="Load latest opportunities"
+        title="Load latest opportunities"
+        onclick={handleLoadLatestOpportunities}
+        icon-name="standard:dataset"
+        class="slds-var-p-around_xxx-small"
+      >
+      </lightning-button>
     </div>
+
+    <template if:true={processing}>
+      <lightning-spinner
+        alternative-text="Loading"
+        size="small"
+      ></lightning-spinner>
+    </template>
+
+    <template if:true={accountData.length}>
+      <lightning-button-icon
+        icon-name="standard:loop"
+        variant="border-filled"
+        alternative-text="Sync"
+        slot="actions"
+        onclick={handleSync}
+      ></lightning-button-icon>
+
+      <div class="slds-var-m-around_medium">
+        <template if:true={accountData.length}>
+          <c-reusable-data-table
+            card-title="Latest Opp related Account list"
+            source-data={accountData}
+            columns={accountColumns}
+          ></c-reusable-data-table>
+        </template>
+      </div>
+    </template>
   </lightning-card>
 </template>

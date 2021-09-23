@@ -1,4 +1,5 @@
 import { LightningElement, wire } from "lwc";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getLatestOpportunityRelatedAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.getLatestOpportunityRelatedAccounts";
 import syncLatestOpportunityWithAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.syncLatestOpportunityWithAccounts";
 
@@ -110,64 +111,129 @@ export default class AccountSyncWithOpportunity extends LightningElement {
 
   accountColumns = COLUMNS;
   syncMessage = "";
+  processing = false;
 
-  @wire(getLatestOpportunityRelatedAccounts)
-  retrivedLatestOpportunityRelatedAccounts(response) {
-    let data = response.data;
-    let error = response.error;
+  // @wire(getLatestOpportunityRelatedAccounts)
+  // retrivedLatestOpportunityRelatedAccounts(response) {
+  //   let data = response.data;
+  //   let error = response.error;
 
-    if (data || error) {
-      // this.processing = false;
-    }
+  //   if (data || error) {
+  //     this.processing = false;
+  //   }
 
-    if (data) {
-      this.accountData = data;
+  //   if (data) {
+  //     this.accountData = data;
 
-      this.accountData = data.map((item) => {
-        let amountColor =
-          item.accountAmount !== item.opportunityAmount
-            ? "slds-text-color_error"
-            : "slds-text-color_success";
+  //     this.accountData = data.map((item) => {
+  //       let amountColor =
+  //         item.accountAmount !== item.opportunityAmount
+  //           ? "slds-text-color_error"
+  //           : "slds-text-color_success";
 
-        let mrrColor =
-          item.accountMRR !== item.opportunityMRR
-            ? "slds-text-color_error"
-            : "slds-text-color_success";
+  //       let mrrColor =
+  //         item.accountMRR !== item.opportunityMRR
+  //           ? "slds-text-color_error"
+  //           : "slds-text-color_success";
 
-        let arrColor =
-          item.accountARR !== item.opportunityARR
-            ? "slds-text-color_error"
-            : "slds-text-color_success";
+  //       let arrColor =
+  //         item.accountARR !== item.opportunityARR
+  //           ? "slds-text-color_error"
+  //           : "slds-text-color_success";
 
-        let iconName =
-          item.accountAmount !== item.opportunityAmount
-            ? "utility:info"
-            : "utility:success";
-        return {
-          ...item,
-          amountColor: amountColor,
-          mrrColor: mrrColor,
-          arrColor: arrColor,
-          iconName: iconName,
-          industryColor: "slds-icon-custom-custom12 slds-text-color_default",
-          accountColor: "datatable-orange"
-        };
-      });
+  //       let iconName =
+  //         item.accountAmount !== item.opportunityAmount
+  //           ? "utility:info"
+  //           : "utility:success";
+  //       return {
+  //         ...item,
+  //         amountColor: amountColor,
+  //         mrrColor: mrrColor,
+  //         arrColor: arrColor,
+  //         iconName: iconName,
+  //         industryColor: "slds-icon-custom-custom12 slds-text-color_default",
+  //         accountColor: "datatable-orange"
+  //       };
+  //     });
 
-      console.log("data", data);
-    } else if (error) {
-      console.log("getUserReports");
-    }
+  //     //console.log("data", data);
+  //   } else if (error) {
+  //     console.log("getUserReports");
+  //   }
+  // }
+
+  showToastMessage(variant, message) {
+    const toastEvnt = new ShowToastEvent({
+      title: "Sync process complete",
+      message: message,
+      variant: variant
+    });
+    this.dispatchEvent(toastEvnt);
   }
 
   handleSync() {
+    this.processing = true;
     console.log("handleSync");
     syncLatestOpportunityWithAccounts({ accounts: this.accountData })
       .then((response) => {
-        this.syncMessage = response;
+        if (response === "Success") {
+          this.showToastMessage(
+            "success",
+            `With success,total sync ${this.accountData.length} records.`
+          );
+        } else {
+          this.showToastMessage("error", `With errors reason for ${response}`);
+        }
       })
       .catch((error) => {
         console.log(error.body.message);
-      });
+      })
+      .finally(() => (this.processing = false));
+  }
+
+  handleLoadLatestOpportunities() {
+    this.processing = true;
+    getLatestOpportunityRelatedAccounts()
+      .then((data) => {
+        if (data) {
+          this.accountData = data;
+
+          this.accountData = data.map((item) => {
+            let amountColor =
+              item.accountAmount !== item.opportunityAmount
+                ? "slds-text-color_error"
+                : "slds-text-color_success";
+
+            let mrrColor =
+              item.accountMRR !== item.opportunityMRR
+                ? "slds-text-color_error"
+                : "slds-text-color_success";
+
+            let arrColor =
+              item.accountARR !== item.opportunityARR
+                ? "slds-text-color_error"
+                : "slds-text-color_success";
+
+            let iconName =
+              item.accountAmount !== item.opportunityAmount
+                ? "utility:info"
+                : "utility:success";
+            return {
+              ...item,
+              amountColor: amountColor,
+              mrrColor: mrrColor,
+              arrColor: arrColor,
+              iconName: iconName,
+              industryColor:
+                "slds-icon-custom-custom12 slds-text-color_default",
+              accountColor: "datatable-orange"
+            };
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.body.message);
+      })
+      .finally(() => (this.processing = false));
   }
 }
