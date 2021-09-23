@@ -1,0 +1,27 @@
+<template>
+  <lightning-card
+    variant="Narrow"
+    title="Latest Opportunity related Accounts"
+    icon-name="standard:opportunity"
+  >
+    <lightning-button-icon
+      icon-name="standard:loop"
+      variant="border-filled"
+      alternative-text="Sync"
+      slot="actions"
+      onclick={handleSync}
+    ></lightning-button-icon>
+
+    Sync message {syncMessage}
+
+    <div class="slds-var-m-around_medium">
+      <template if:true={accountData.length}>
+        <c-reusable-data-table
+          card-title="Latest Opp related Account list"
+          source-data={accountData}
+          columns={accountColumns}
+        ></c-reusable-data-table>
+      </template>
+    </div>
+  </lightning-card>
+</template>

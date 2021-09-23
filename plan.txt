@@ -203,6 +203,8 @@ https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforc
 
 
 
+soql get last moidified opportunity list
+	list<Account> accountsList =[Select id, Name, (Select Id, name,accountid,StageName,Amount,Monthly_Recurring_Revenue__c,Annual_Recurring_Revenue__c From Opportunities where StageName='Closed Won' order By lastmodifiedDate desc limit 1) From Account where Active__c=true];
     
 APEX primitive data types
     Boolean isActive=true;
