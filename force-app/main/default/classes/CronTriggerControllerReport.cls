@@ -67,6 +67,7 @@ public with sharing class CronTriggerControllerReport {
 
         UserReportWrapper()
         {            
+            
         }
 
         UserReportWrapper(Report currentReport)
