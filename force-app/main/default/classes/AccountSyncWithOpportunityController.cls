@@ -43,11 +43,7 @@ public with sharing class AccountSyncWithOpportunityController {
                 
             }
 
-            System.debug('total'+accounts[0]);
-
-            return accounts;
-
-            //Select id, Name,Opportunity_Amount__c,Monthly_Recurring_Revenue__c,Annual_Recurring_Revenue__c,Active__c, (Select Id, name,accountid,StageName,Amount,Monthly_Recurring_Revenue__c,Annual_Recurring_Revenue__c,CloseDate,LastModifiedDate,CreatedBy.Name,LastModifiedBy.Name From Opportunities where StageName='Closed Won' order By lastmodifiedDate desc limit 1) From Account where Active__c=true limit 10
+            return accounts;            
             
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());

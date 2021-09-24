@@ -7,7 +7,7 @@ import GetUserFlowAndProcessBuilderDetailList from "@salesforce/apex/CronTrigger
 import GetUserApprovalTaskDetailList from "@salesforce/apex/CronTriggerController.GetUserApprovalTaskDetailList";
 import GetWorkflowRuleList from "@salesforce/apex/CronTriggerController.GetWorkflowRuleList";
 import getUserDetail from "@salesforce/apex/CronTriggerController.getUserDetail";
-import getUserReports from "@salesforce/apex/CronTriggerController.getUserReports";
+import getUserReports from "@salesforce/apex/CronTriggerControllerReport.getUserReports";
 
 /**
  * PageSession.page==>visual-force page

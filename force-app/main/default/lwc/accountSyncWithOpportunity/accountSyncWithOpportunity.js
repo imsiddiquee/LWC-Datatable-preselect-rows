@@ -114,55 +114,6 @@ export default class AccountSyncWithOpportunity extends LightningElement {
   syncMessage = "";
   processing = false;
 
-  // @wire(getLatestOpportunityRelatedAccounts)
-  // retrivedLatestOpportunityRelatedAccounts(response) {
-  //   let data = response.data;
-  //   let error = response.error;
-
-  //   if (data || error) {
-  //     this.processing = false;
-  //   }
-
-  //   if (data) {
-  //     this.accountData = data;
-
-  //     this.accountData = data.map((item) => {
-  //       let amountColor =
-  //         item.accountAmount !== item.opportunityAmount
-  //           ? "slds-text-color_error"
-  //           : "slds-text-color_success";
-
-  //       let mrrColor =
-  //         item.accountMRR !== item.opportunityMRR
-  //           ? "slds-text-color_error"
-  //           : "slds-text-color_success";
-
-  //       let arrColor =
-  //         item.accountARR !== item.opportunityARR
-  //           ? "slds-text-color_error"
-  //           : "slds-text-color_success";
-
-  //       let iconName =
-  //         item.accountAmount !== item.opportunityAmount
-  //           ? "utility:info"
-  //           : "utility:success";
-  //       return {
-  //         ...item,
-  //         amountColor: amountColor,
-  //         mrrColor: mrrColor,
-  //         arrColor: arrColor,
-  //         iconName: iconName,
-  //         industryColor: "slds-icon-custom-custom12 slds-text-color_default",
-  //         accountColor: "datatable-orange"
-  //       };
-  //     });
-
-  //     //console.log("data", data);
-  //   } else if (error) {
-  //     console.log("getUserReports");
-  //   }
-  // }
-
   showToastMessage(variant, message) {
     const toastEvnt = new ShowToastEvent({
       title: "Sync process complete",
