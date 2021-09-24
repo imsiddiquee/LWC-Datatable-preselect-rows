@@ -23,7 +23,7 @@ const COLUMNS = [
     cellAttributes: {
       alignment: "left",
       class: { fieldName: "amountColor" },
-      iconName: { fieldName: "iconName" },
+      iconName: { fieldName: "amountIconName" },
       iconPosition: "right"
     }
   },
@@ -35,7 +35,7 @@ const COLUMNS = [
     cellAttributes: {
       alignment: "left",
       class: { fieldName: "mrrColor" },
-      iconName: { fieldName: "iconName" },
+      iconName: { fieldName: "mrrIconName" },
       iconPosition: "right"
     }
   },
@@ -47,7 +47,7 @@ const COLUMNS = [
     cellAttributes: {
       alignment: "left",
       class: { fieldName: "arrColor" },
-      iconName: { fieldName: "iconName" },
+      iconName: { fieldName: "arrIconName" },
       iconPosition: "right"
     }
   },
@@ -69,7 +69,7 @@ const COLUMNS = [
     cellAttributes: {
       alignment: "left",
       class: { fieldName: "amountColor" },
-      iconName: { fieldName: "iconName" },
+      iconName: { fieldName: "amountIconName" },
       iconPosition: "right"
     }
   },
@@ -81,7 +81,7 @@ const COLUMNS = [
     cellAttributes: {
       alignment: "left",
       class: { fieldName: "mrrColor" },
-      iconName: { fieldName: "iconName" },
+      iconName: { fieldName: "mrrIconName" },
       iconPosition: "right"
     }
   },
@@ -93,7 +93,7 @@ const COLUMNS = [
     cellAttributes: {
       alignment: "left",
       class: { fieldName: "arrColor" },
-      iconName: { fieldName: "iconName" },
+      iconName: { fieldName: "arrIconName" },
       iconPosition: "right"
     }
   },
@@ -189,7 +189,11 @@ export default class AccountSyncWithOpportunity extends LightningElement {
       .catch((error) => {
         console.log(error.body.message);
       })
-      .finally(() => (this.processing = false));
+      .finally(() => {
+        this.processing = false;
+        this.accountData = [];
+        this.handleLoadLatestOpportunities();
+      });
   }
 
   handleLoadLatestOpportunities() {
@@ -217,19 +221,29 @@ export default class AccountSyncWithOpportunity extends LightningElement {
                 ? "slds-text-color_error"
                 : "slds-text-color_success";
 
-            let iconName =
+            let amountIconName =
               item.accountAmount !== item.opportunityAmount
                 ? "utility:info"
                 : "utility:success";
+
+            let mrrIconName =
+              item.accountMRR !== item.opportunityMRR
+                ? "utility:info"
+                : "utility:success";
+
+            let arrIconName =
+              item.accountARR !== item.opportunityARR
+                ? "utility:info"
+                : "utility:success";
+
             return {
               ...item,
               amountColor: amountColor,
               mrrColor: mrrColor,
               arrColor: arrColor,
-              iconName: iconName,
-              industryColor:
-                "slds-icon-custom-custom12 slds-text-color_default",
-              accountColor: "datatable-orange"
+              amountIconName: amountIconName,
+              mrrIconName: mrrIconName,
+              arrIconName: arrIconName
             };
           });
         }

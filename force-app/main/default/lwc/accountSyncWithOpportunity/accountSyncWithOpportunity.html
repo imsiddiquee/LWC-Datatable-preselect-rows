@@ -27,6 +27,18 @@
         </lightning-button>
       </template>
     </div>
+    <template if:true={accountData.length}>
+      <div class="slds-var-m-around_small">
+        <lightning-badge
+          label="Latest closed won opportunities"
+          class="slds-badge_inverse"
+        ></lightning-badge>
+        <lightning-badge
+          label="Active account"
+          class="slds-badge_inverse"
+        ></lightning-badge>
+      </div>
+    </template>
 
     <template if:true={processing}>
       <lightning-spinner
