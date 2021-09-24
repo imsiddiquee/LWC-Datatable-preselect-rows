@@ -13,6 +13,7 @@ import getUserReports from "@salesforce/apex/CronTriggerController.getUserReport
  * PageSession.page==>visual-force page
  * SessionHelper==> apex class
  * CronTriggerController==>apex controller
+ * CronTriggerControllerReport==>apex controller
  * dependent on components are
  * confirmationDialog==>confirmation message
  * userDetail
