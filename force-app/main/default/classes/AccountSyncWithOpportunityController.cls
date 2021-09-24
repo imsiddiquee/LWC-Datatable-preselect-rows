@@ -3,7 +3,7 @@ public with sharing class AccountSyncWithOpportunityController {
 
     }
 
-    @AuraEnabled(cacheable=true)    
+    @AuraEnabled
     public static List<AccountOpportunityWrapper> getLatestOpportunityRelatedAccounts(){
         try {
 
@@ -34,6 +34,7 @@ public with sharing class AccountSyncWithOpportunityController {
                         ) 
                         FROM Account 
                         WHERE Active__c=true
+                        ORDER BY Name
                     ]
                 )
 

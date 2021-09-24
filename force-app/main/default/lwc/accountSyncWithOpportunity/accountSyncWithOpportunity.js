@@ -1,4 +1,4 @@
-import { LightningElement, wire } from "lwc";
+import { LightningElement, track } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getLatestOpportunityRelatedAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.getLatestOpportunityRelatedAccounts";
 import syncLatestOpportunityWithAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.syncLatestOpportunityWithAccounts";
@@ -107,6 +107,7 @@ const COLUMNS = [
   { label: "Modified By", fieldName: "LastModifiedBy", initialWidth: 120 }
 ];
 export default class AccountSyncWithOpportunity extends LightningElement {
+  @track
   accountData = [];
 
   accountColumns = COLUMNS;
@@ -193,6 +194,8 @@ export default class AccountSyncWithOpportunity extends LightningElement {
 
   handleLoadLatestOpportunities() {
     this.processing = true;
+    this.accountData = [];
+
     getLatestOpportunityRelatedAccounts()
       .then((data) => {
         if (data) {

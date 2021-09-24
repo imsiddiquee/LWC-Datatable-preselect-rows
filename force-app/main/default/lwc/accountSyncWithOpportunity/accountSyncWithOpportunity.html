@@ -14,6 +14,18 @@
         class="slds-var-p-around_xxx-small"
       >
       </lightning-button>
+
+      <template if:true={accountData.length}>
+        <lightning-button
+          variant="success"
+          label="Sync Opp with Acc"
+          title="Sync Opp with Acc"
+          onclick={handleSync}
+          icon-name="standard:loop"
+          class="slds-var-p-around_xxx-small"
+        >
+        </lightning-button>
+      </template>
     </div>
 
     <template if:true={processing}>
