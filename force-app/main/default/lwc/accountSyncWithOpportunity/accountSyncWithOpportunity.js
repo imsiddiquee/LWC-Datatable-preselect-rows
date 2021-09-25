@@ -143,8 +143,7 @@ export default class AccountSyncWithOpportunity extends LightningElement {
         console.log(error.body.message);
       })
       .finally(() => {
-        this.processing = false;
-        this.accountData = [];
+        //this.processing = false;
         this.handleLoadAccountRelatedLatestOpportunity();
       });
   }
