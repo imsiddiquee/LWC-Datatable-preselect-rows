@@ -1,15 +1,15 @@
 <template>
   <lightning-card
     variant="Narrow"
-    title="Latest Opportunity related Accounts"
+    title={componentTitle}
     icon-name="standard:opportunity"
   >
     <div class="slds-var-p-horizontal_small">
       <lightning-button
         variant="brand"
-        label="Load latest opportunities"
-        title="Load latest opportunities"
-        onclick={handleLoadLatestOpportunities}
+        label="Load Acc related latest opportunity"
+        title="Load Acc related latest opportunity"
+        onclick={handleLoadAccountRelatedLatestOpportunity}
         icon-name="standard:dataset"
         class="slds-var-p-around_xxx-small"
       >
@@ -18,8 +18,8 @@
       <template if:true={accountData.length}>
         <lightning-button
           variant="success"
-          label="Sync Opp with Acc"
-          title="Sync Opp with Acc"
+          label="Sync Acc with Opp"
+          title="Sync Acc with Opp"
           onclick={handleSync}
           icon-name="standard:loop"
           class="slds-var-p-around_xxx-small"
@@ -30,11 +30,12 @@
     <template if:true={accountData.length}>
       <div class="slds-var-m-around_small">
         <lightning-badge
-          label="Latest closed won opportunities"
+          label="Active account"
           class="slds-badge_inverse"
         ></lightning-badge>
+
         <lightning-badge
-          label="Active account"
+          label="Latest closed won opportunities"
           class="slds-badge_inverse"
         ></lightning-badge>
       </div>

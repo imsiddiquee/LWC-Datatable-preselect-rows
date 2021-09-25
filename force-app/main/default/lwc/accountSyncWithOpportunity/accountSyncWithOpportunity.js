@@ -1,4 +1,4 @@
-import { LightningElement, track } from "lwc";
+import { api, LightningElement, track } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getLatestOpportunityRelatedAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.getLatestOpportunityRelatedAccounts";
 import syncLatestOpportunityWithAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.syncLatestOpportunityWithAccounts";
@@ -107,6 +107,8 @@ const COLUMNS = [
   { label: "Modified By", fieldName: "LastModifiedBy", initialWidth: 120 }
 ];
 export default class AccountSyncWithOpportunity extends LightningElement {
+  @api componentTitle = "Account Sync";
+
   @track
   accountData = [];
 
@@ -125,7 +127,7 @@ export default class AccountSyncWithOpportunity extends LightningElement {
 
   handleSync() {
     this.processing = true;
-    console.log("handleSync");
+
     syncLatestOpportunityWithAccounts({ accounts: this.accountData })
       .then((response) => {
         if (response === "Success") {
@@ -143,11 +145,11 @@ export default class AccountSyncWithOpportunity extends LightningElement {
       .finally(() => {
         this.processing = false;
         this.accountData = [];
-        this.handleLoadLatestOpportunities();
+        this.handleLoadAccountRelatedLatestOpportunity();
       });
   }
 
-  handleLoadLatestOpportunities() {
+  handleLoadAccountRelatedLatestOpportunity() {
     this.processing = true;
     this.accountData = [];
 
