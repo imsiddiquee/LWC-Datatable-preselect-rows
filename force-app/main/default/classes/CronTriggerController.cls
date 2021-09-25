@@ -44,8 +44,11 @@ public with sharing class CronTriggerController {
                 ]
             )
             {
-    
-                details.add(new UserDetailWrapper(userObj) );
+                UserDetailWrapper currentUserDetail= new UserDetailWrapper(userObj);               
+                fillCurrentUserLoginStatusInfo(currentUserDetail);
+                fillCurrentUserSharedGroupInfo(currentUserDetail);
+
+                details.add(currentUserDetail);
             }
 
             if (details.size()>0) {                
@@ -59,6 +62,33 @@ public with sharing class CronTriggerController {
             throw new AuraHandledException(e.getMessage());
         }
      
+    }
+
+    private static UserDetailWrapper fillCurrentUserLoginStatusInfo(UserDetailWrapper currentUserDetail)
+    {
+        List<UserLogin> loginObj= [SELECT Id, UserId, IsFrozen, IsPasswordLocked, LastModifiedDate, LastModifiedById FROM UserLogin where UserId=:currentUserDetail.userId];        
+        for (UserLogin loginStatus : loginObj) {
+            currentUserDetail.isFrozen=String.valueOf(loginStatus.IsFrozen);
+            currentUserDetail.isPasswordLocked=String.valueOf(loginStatus.IsPasswordLocked);            
+        }
+
+        return currentUserDetail;
+    }
+
+    private static UserDetailWrapper fillCurrentUserSharedGroupInfo(UserDetailWrapper currentUserDetail)
+    {
+        String userGroups='';
+        List<Group> userGroupList= [SELECT Id, Name, DeveloperName, RelatedId, Type, Email, OwnerId FROM Group where Id IN (SELECT GroupId FROM GroupMember where UserOrGroupId =:currentUserDetail.userId )];        
+        for (Group currentGroup : userGroupList) {
+            userGroups+=currentGroup.Name+' ,';
+            
+        }
+        if(!String.isBlank(userGroups))
+        {
+            currentUserDetail.sharedGroups=userGroups.removeEnd(',');
+        }        
+
+        return currentUserDetail;
     }
     
     @AuraEnabled(cacheable=true)
@@ -240,6 +270,10 @@ public with sharing class CronTriggerController {
         @AuraEnabled 
         public String isActive{get;set;}
         @AuraEnabled 
+        public String isFrozen{get;set;}
+        @AuraEnabled 
+        public String isPasswordLocked{get;set;}
+        @AuraEnabled 
         public String lastLoginDate{get;set;}
         @AuraEnabled 
         public String userRole{get;set;}
@@ -247,6 +281,8 @@ public with sharing class CronTriggerController {
         public String userRoleId{get;set;}
         @AuraEnabled 
         public String userType{get;set;}
+        @AuraEnabled 
+        public String sharedGroups{get;set;}
 
         UserDetailWrapper()
         {

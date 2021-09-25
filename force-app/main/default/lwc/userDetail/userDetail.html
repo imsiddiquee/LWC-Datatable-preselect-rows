@@ -198,6 +198,49 @@
             slds-size_1-of-12
           "
         >
+          <b>Is Frozen</b>
+        </div>
+        <div
+          class="
+            slds-col
+            slds-large-size_3-of-12
+            slds-medium-size_1-of-12
+            slds-size_1-of-12
+          "
+        >
+          <span class="slds-text-color_error">{userDetail.isFrozen}</span>
+        </div>
+
+        <div
+          class="
+            slds-col
+            slds-large-size_1-of-12
+            slds-medium-size_1-of-12
+            slds-size_1-of-12
+          "
+        >
+          <b>Is Pass Locked</b>
+        </div>
+        <div
+          class="
+            slds-col
+            slds-large-size_3-of-12
+            slds-medium-size_1-of-12
+            slds-size_1-of-12
+          "
+        >
+          <span class="slds-text-color_error"
+            >{userDetail.isPasswordLocked}</span
+          >
+        </div>
+        <div
+          class="
+            slds-col
+            slds-large-size_1-of-12
+            slds-medium-size_1-of-12
+            slds-size_1-of-12
+          "
+        >
           <b>Last Login Date</b>
         </div>
         <div
@@ -209,6 +252,26 @@
           "
         >
           <span class="slds-text-color_error">{userDetail.lastLoginDate}</span>
+        </div>
+        <div
+          class="
+            slds-col
+            slds-large-size_1-of-12
+            slds-medium-size_1-of-12
+            slds-size_1-of-12
+          "
+        >
+          <b>Shared Groups</b>
+        </div>
+        <div
+          class="
+            slds-col
+            slds-large-size_3-of-12
+            slds-medium-size_1-of-12
+            slds-size_1-of-12
+          "
+        >
+          {userDetail.sharedGroups}
         </div>
       </div>
     </lightning-card>
