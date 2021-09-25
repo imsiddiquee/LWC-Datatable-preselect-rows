@@ -35,7 +35,12 @@
         ></lightning-badge>
 
         <lightning-badge
-          label="Latest closed won opportunities"
+          label="Latest opportunity"
+          class="slds-badge_inverse"
+        ></lightning-badge>
+
+        <lightning-badge
+          label="Closed won opportunity"
           class="slds-badge_inverse"
         ></lightning-badge>
       </div>
@@ -60,7 +65,7 @@
       <div class="slds-var-m-around_medium">
         <template if:true={accountData.length}>
           <c-reusable-data-table
-            card-title="Latest Opp related Account list"
+            card-title="Account list"
             source-data={accountData}
             columns={accountColumns}
           ></c-reusable-data-table>
