@@ -6,9 +6,22 @@ import AbortTheSelectedJob from "@salesforce/apex/CronTriggerController.AbortThe
 
 export default class ReusableDataTable extends LightningElement {
   processing = false;
+
   @api cardTitle = "";
 
   @api columns = [];
+
+  //table check show/hide base on property.
+  @track
+  isHideChkColumn = true;
+  @api
+  get hideCheckbox() {
+    return this.isHideChkColumn;
+  }
+  set hideCheckbox(value) {
+    let currentValue = JSON.parse(value);
+    this.isHideChkColumn = currentValue;
+  }
   rowOffset = 0;
 
   @track page = 1; //this will initialize 1st page
