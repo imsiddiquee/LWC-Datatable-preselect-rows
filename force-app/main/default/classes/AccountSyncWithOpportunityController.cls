@@ -4,10 +4,12 @@ public with sharing class AccountSyncWithOpportunityController {
     }
 
     @AuraEnabled
-    public static List<AccountOpportunityWrapper> getLatestOpportunityRelatedAccounts(){
+    public static AccWrapperList getLatestOpportunityRelatedAccounts(){
         try {
 
-            List<AccountOpportunityWrapper> accounts=new List<AccountOpportunityWrapper>();
+            //List<AccountOpportunityWrapper> accounts=new List<AccountOpportunityWrapper>();
+
+            AccWrapperList accListObj=new AccWrapperList();            
 
             for(Account accObj:
                     [
@@ -39,11 +41,12 @@ public with sharing class AccountSyncWithOpportunityController {
                 )
 
             {
-                accounts.add(new AccountOpportunityWrapper(accObj));
+                accListObj.accList.add(new AccountOpportunityWrapper(accObj));
+                accListObj.selectedIdSet.add(accObj.Id);
                 
             }
 
-            return accounts;            
+            return accListObj;            
             
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
@@ -84,6 +87,16 @@ public with sharing class AccountSyncWithOpportunityController {
        
     }
 
+    public class AccWrapperList{  
+        @AuraEnabled public List<AccountOpportunityWrapper> accList {get; set;}  
+        @AuraEnabled public set<Id> selectedIdSet {get; set;}  
+        public AccWrapperList()
+        {
+            this.accList=new List<AccountOpportunityWrapper>();
+            this.selectedIdSet=new set<Id>();
+        }
+    }  
+
     public with sharing class AccountOpportunityWrapper {
         @AuraEnabled
         public String accountId {get;set;}
@@ -119,6 +132,8 @@ public with sharing class AccountSyncWithOpportunityController {
         @AuraEnabled
         public String LastModifiedBy {get;set;}
 
+        
+
         public AccountOpportunityWrapper()
         {
 
@@ -132,6 +147,8 @@ public with sharing class AccountSyncWithOpportunityController {
             this.accountMRR=String.isBlank(String.valueOf(currentAccount.Monthly_Recurring_Revenue__c))?0:currentAccount.Monthly_Recurring_Revenue__c;
             this.accountARR=String.isBlank(String.valueOf(currentAccount.Annual_Recurring_Revenue__c))?0:currentAccount.Annual_Recurring_Revenue__c;
             this.accountActive=String.valueOf(currentAccount.Active__c);
+
+            
 
             if(currentAccount.Opportunities.size()>0){
                 Opportunity relatedOpp = currentAccount.Opportunities[0];
