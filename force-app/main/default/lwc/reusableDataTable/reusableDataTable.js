@@ -24,6 +24,19 @@ export default class ReusableDataTable extends LightningElement {
     let currentValue = JSON.parse(value);
     this.isHideChkColumn = currentValue;
   }
+
+  //col boarder
+
+  @track
+  columnBoarderClass = "";
+  @api
+  get columnBoarder() {
+    return this.columnBoarderClass;
+  }
+  set columnBoarder(value) {
+    this.columnBoarderClass = value === "true" ? "slds-table_col-bordered" : "";
+  }
+
   rowOffset = 0;
 
   @track page = 1; //this will initialize 1st page

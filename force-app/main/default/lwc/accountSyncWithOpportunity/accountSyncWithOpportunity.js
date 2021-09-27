@@ -3,17 +3,22 @@ import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getLatestOpportunityRelatedAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.getLatestOpportunityRelatedAccounts";
 import syncLatestOpportunityWithAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.syncLatestOpportunityWithAccounts";
 
+const BASE_URL = `https://${window.location.hostname}/`;
+
 const COLUMNS = [
   {
-    label: "Acc Id",
-    fieldName: "accountId",
-    initialWidth: 80
-  },
-  {
-    label: "Name",
-    fieldName: "accountName",
-    initialWidth: 80,
-    wrapText: true
+    label: "Acc Name",
+    fieldName: "accountUrl",
+    wrapText: true,
+    initialWidth: 100,
+    type: "url",
+    typeAttributes: {
+      label: {
+        fieldName: "accountName"
+      },
+      tooltip: "Acc Name",
+      target: "_blank"
+    }
   },
   {
     label: "Amount",
@@ -53,12 +58,19 @@ const COLUMNS = [
   },
   { label: "Is Active", fieldName: "accountActive", initialWidth: 100 },
 
-  { label: "Opp Id", fieldName: "opportunityId", initialWidth: 80 },
   {
-    label: "Name",
-    fieldName: "opportunityName",
+    label: "Opp Name",
+    fieldName: "oppUrl",
+    wrapText: true,
     initialWidth: 100,
-    wrapText: true
+    type: "url",
+    typeAttributes: {
+      label: {
+        fieldName: "opportunityName"
+      },
+      tooltip: "Opp Name",
+      target: "_blank"
+    }
   },
   { label: "Stage", fieldName: "opportunityStageName", initialWidth: 80 },
   {
@@ -171,6 +183,8 @@ export default class AccountSyncWithOpportunity extends LightningElement {
           //console.log(JSON.stringify(this.preSelectedRows));
 
           this.accountData = data.accList.map((item) => {
+            let accountUrl = BASE_URL + item.accountId;
+            let oppUrl = BASE_URL + item.opportunityId;
             let amountColor =
               item.accountAmount !== item.opportunityAmount
                 ? "slds-text-color_error"
@@ -204,6 +218,8 @@ export default class AccountSyncWithOpportunity extends LightningElement {
             return {
               ...item,
               id: item.accountId,
+              accountUrl: accountUrl,
+              oppUrl: oppUrl,
               amountColor: amountColor,
               mrrColor: mrrColor,
               arrColor: arrColor,
