@@ -65,9 +65,11 @@
       <div class="slds-var-m-around_medium">
         <template if:true={accountData.length}>
           <c-reusable-data-table
+            data-id="overview"
             card-title="Account list"
             source-data={accountData}
             hide-checkbox="false"
+            pre-selected-rows={preSelectedRows}
             columns={accountColumns}
           ></c-reusable-data-table>
         </template>

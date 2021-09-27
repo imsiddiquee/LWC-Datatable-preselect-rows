@@ -11,6 +11,8 @@ export default class ReusableDataTable extends LightningElement {
 
   @api columns = [];
 
+  @api preSelectedRows = [];
+
   //table check show/hide base on property.
   @track
   isHideChkColumn = true;
@@ -62,6 +64,11 @@ export default class ReusableDataTable extends LightningElement {
 
   get confirmationDisplayMessage() {
     return `Do you want to proceed job ${this.selectedJobId}?`;
+  }
+
+  // Parent call this event to know data-table selected rows.
+  @api getRows() {
+    return this.template.querySelector("lightning-datatable").getSelectedRows();
   }
 
   //clicking on previous button this method will be called

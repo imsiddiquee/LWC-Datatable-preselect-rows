@@ -112,6 +112,8 @@ export default class AccountSyncWithOpportunity extends LightningElement {
   @track
   accountData = [];
 
+  @track preSelectedRows;
+
   accountColumns = COLUMNS;
   syncMessage = "";
   processing = false;
@@ -146,6 +148,16 @@ export default class AccountSyncWithOpportunity extends LightningElement {
         //this.processing = false;
         this.handleLoadAccountRelatedLatestOpportunity();
       });
+
+    // call child component event to show selectd rows
+    // const selectedRows = this.template
+    //   .querySelector('[data-id="overview"]')
+    //   .getRows();
+
+    // let selectedRows = this.template
+    //   .querySelector("c-reusable-data-table")
+    //   .getRows();
+    // console.log("selectedRows::", JSON.stringify(selectedRows));
   }
 
   handleLoadAccountRelatedLatestOpportunity() {
@@ -155,9 +167,10 @@ export default class AccountSyncWithOpportunity extends LightningElement {
     getLatestOpportunityRelatedAccounts()
       .then((data) => {
         if (data) {
-          this.accountData = data;
+          this.preSelectedRows = data.selectedIdSet;
+          //console.log(JSON.stringify(this.preSelectedRows));
 
-          this.accountData = data.map((item) => {
+          this.accountData = data.accList.map((item) => {
             let amountColor =
               item.accountAmount !== item.opportunityAmount
                 ? "slds-text-color_error"
@@ -190,6 +203,7 @@ export default class AccountSyncWithOpportunity extends LightningElement {
 
             return {
               ...item,
+              id: item.accountId,
               amountColor: amountColor,
               mrrColor: mrrColor,
               arrColor: arrColor,
@@ -198,11 +212,14 @@ export default class AccountSyncWithOpportunity extends LightningElement {
               arrIconName: arrIconName
             };
           });
+          //console.log(this.accountData);
         }
       })
       .catch((error) => {
         console.log(error.body.message);
       })
-      .finally(() => (this.processing = false));
+      .finally(() => {
+        this.processing = false;
+      });
   }
 }
