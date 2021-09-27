@@ -357,3 +357,13 @@ SOQL check null
 SOQL
     compare datetime with data==>format the datetime to date then compare
         https://salesforce.stackexchange.com/questions/37396/is-it-possible-to-compare-datetime-and-date-in-soql
+
+
+apex 
+    get org instance
+    	System.debug(Url.getOrgDomainUrl().toExternalForm() + '/services/apexrest/contactapi');
+
+lwc
+    var hostname = window.location.hostname;
+    var arr = hostname.split(".");
+    var instance = arr[0]; 
