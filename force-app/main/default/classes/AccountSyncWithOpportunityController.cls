@@ -99,6 +99,8 @@ public with sharing class AccountSyncWithOpportunityController {
 
     public with sharing class AccountOpportunityWrapper {
         @AuraEnabled
+        public String id {get;set;}
+        @AuraEnabled
         public String accountId {get;set;}
         @AuraEnabled
         public String accountName {get;set;}
@@ -141,6 +143,7 @@ public with sharing class AccountSyncWithOpportunityController {
 
         public AccountOpportunityWrapper(Account currentAccount)
         {
+            this.id=currentAccount.Id;
             this.accountId=currentAccount.Id;
             this.accountName=currentAccount.Name;
             this.accountAmount=String.isBlank(String.valueOf(currentAccount.Opportunity_Amount__c))?0:currentAccount.Opportunity_Amount__c;
