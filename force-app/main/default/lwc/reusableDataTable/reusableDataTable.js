@@ -11,6 +11,9 @@ export default class ReusableDataTable extends LightningElement {
 
   @api columns = [];
 
+  @track totalSeletedRows;
+
+  @track selectedRowsPagesMap = {};
   @track _preSelectedRows = [];
   @track prePageSelectedRows = [];
 
@@ -22,6 +25,8 @@ export default class ReusableDataTable extends LightningElement {
   set allPreSelectedRows(value) {
     this._preSelectedRows = value;
   }
+
+  @track _originTagRowSelectionLocal = "LIGHTNING-DATATABLE";
 
   //table check show/hide base on property.
   @track
@@ -73,8 +78,9 @@ export default class ReusableDataTable extends LightningElement {
     //slice will take 0th element and ends with 5, but it doesn't include 5th element
     //so 0 to 4th rows will be displayed in the table
     this.data = this.items.slice(0, this.pageSize);
-    this.getPrePageSelectedRows();
+    this.getPrePageSelectedRows(1);
     this.endingRecord = this.pageSize;
+    this._originTagRowSelectionLocal = "LIGHTNING-DATATABLE";
 
     // this.error = undefined;
   }
@@ -95,9 +101,12 @@ export default class ReusableDataTable extends LightningElement {
     return this.template.querySelector("lightning-datatable").getSelectedRows();
   }
 
-  getPrePageSelectedRows() {
-    this.prePageSelectedRows = this.data.map((item) => item.id);
+  isNotBlank(checkString) {
+    return (
+      checkString !== "" && checkString !== null && checkString !== undefined
+    );
   }
+
   //clicking on previous button this method will be called
   previousHandler() {
     this.processing = true;
@@ -136,7 +145,7 @@ export default class ReusableDataTable extends LightningElement {
         : this.endingRecord;
 
     this.data = this.items.slice(this.startingRecord, this.endingRecord);
-    this.getPrePageSelectedRows();
+    this.getPrePageSelectedRows(page);
     //increment by 1 to display the startingRecord count,
     //so for 2nd page, it will show "Displaying 6 to 10 of 23 records. Page 2 of 5"
     this.startingRecord = this.startingRecord + 1;
@@ -247,5 +256,44 @@ export default class ReusableDataTable extends LightningElement {
     this.dispatchEvent(
       new CustomEvent("refreshrecords", { payload: this.selectedUserId })
     );
+  }
+
+  getPrePageSelectedRows(page) {
+    //debugger;
+    let selectedRowsMap = this.data.map((item) => item.id);
+    if (!this.isNotBlank(this.selectedRowsPagesMap[page])) {
+      this.selectedRowsPagesMap[page] = selectedRowsMap;
+    }
+    this.prePageSelectedRows = this.selectedRowsPagesMap[page];
+    this.getTotalSeletedRows();
+    this._originTagRowSelectionLocal = "button";
+  }
+
+  handleRowSelection(event) {
+    //debugger;
+    // if (this.isFromPageEvent === true) {
+    //   this.isFromPageEvent = false;
+    //   return;
+    // }
+    if (this._originTagRowSelectionLocal === "LIGHTNING-DATATABLE") {
+      let selectedRowsMap = JSON.parse(
+        JSON.stringify(event.detail.selectedRows)
+      );
+
+      this.selectedRowsPagesMap[this.page] = selectedRowsMap.map((p) => p.id);
+      this.getTotalSeletedRows();
+    } else {
+      this._originTagRowSelectionLocal = event.target.tagName;
+    }
+  }
+
+  getTotalSeletedRows() {
+    let totalCounter = 0;
+    Object.values(this.selectedRowsPagesMap).forEach((rowsList) => {
+      //console.log("rowsList", rowsList.length);
+      totalCounter += this.pageSize - rowsList.length;
+    });
+
+    this.totalSeletedRows = this.totalRecountCount - totalCounter;
   }
 }
