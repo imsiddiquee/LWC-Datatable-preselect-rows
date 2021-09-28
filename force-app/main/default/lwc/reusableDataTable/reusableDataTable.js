@@ -11,7 +11,17 @@ export default class ReusableDataTable extends LightningElement {
 
   @api columns = [];
 
-  @api preSelectedRows = [];
+  @track _preSelectedRows = [];
+  @track prePageSelectedRows = [];
+
+  @api
+  get allPreSelectedRows() {
+    return this._preSelectedRows;
+  }
+
+  set allPreSelectedRows(value) {
+    this._preSelectedRows = value;
+  }
 
   //table check show/hide base on property.
   @track
@@ -63,6 +73,7 @@ export default class ReusableDataTable extends LightningElement {
     //slice will take 0th element and ends with 5, but it doesn't include 5th element
     //so 0 to 4th rows will be displayed in the table
     this.data = this.items.slice(0, this.pageSize);
+    this.getPrePageSelectedRows();
     this.endingRecord = this.pageSize;
 
     // this.error = undefined;
@@ -84,6 +95,9 @@ export default class ReusableDataTable extends LightningElement {
     return this.template.querySelector("lightning-datatable").getSelectedRows();
   }
 
+  getPrePageSelectedRows() {
+    this.prePageSelectedRows = this.data.map((item) => item.id);
+  }
   //clicking on previous button this method will be called
   previousHandler() {
     this.processing = true;
@@ -122,7 +136,7 @@ export default class ReusableDataTable extends LightningElement {
         : this.endingRecord;
 
     this.data = this.items.slice(this.startingRecord, this.endingRecord);
-
+    this.getPrePageSelectedRows();
     //increment by 1 to display the startingRecord count,
     //so for 2nd page, it will show "Displaying 6 to 10 of 23 records. Page 2 of 5"
     this.startingRecord = this.startingRecord + 1;
