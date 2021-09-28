@@ -367,3 +367,17 @@ lwc
     var hostname = window.location.hostname;
     var arr = hostname.split(".");
     var instance = arr[0]; 
+lwc 
+    data-table
+        hyperlink column
+                { 
+                        label: 'Name', fieldName: 'accountUrl', wrapText: true,initialWidth: 80,
+                        type: 'url',
+                        typeAttributes: {
+                            label: { 
+                                fieldName: 'accountName' 
+                            },
+                            target : '_blank'
+                        }
+                }
+
