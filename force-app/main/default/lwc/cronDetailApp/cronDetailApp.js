@@ -10,6 +10,7 @@ import getUserDetail from "@salesforce/apex/CronTriggerController.getUserDetail"
 import getUserReports from "@salesforce/apex/CronTriggerControllerReport.getUserReports";
 
 /**
+ * apex return data must have id column
  * PageSession.page==>visual-force page
  * SessionHelper==> apex class
  * CronTriggerController==>apex controller
