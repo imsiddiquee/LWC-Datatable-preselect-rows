@@ -12,7 +12,7 @@ export default class ReusableDataTable extends LightningElement {
   @api columns = [];
 
   //pre selected row
-  @track totalSeletedRows = 0;
+  @track allSeletedRowCount = 0;
 
   @track selectedRowsPagesMap = [];
   @track prePageSelectedRows = [];
@@ -27,7 +27,7 @@ export default class ReusableDataTable extends LightningElement {
     return this.isHideChkColumn;
   }
   set hideCheckbox(value) {
-    this.isHideChkColumn = JSON.parse(value);
+    this.isHideChkColumn = value === "true" ? true : false;
   }
 
   //col boarder
@@ -273,10 +273,9 @@ export default class ReusableDataTable extends LightningElement {
   getTotalSeletedRows() {
     let totalCounter = 0;
     Object.values(this.selectedRowsPagesMap).forEach((rowsList) => {
-      //console.log("rowsList", rowsList.length);
       totalCounter += this.pageSize - rowsList.length;
     });
 
-    this.totalSeletedRows = this.totalRecountCount - totalCounter;
+    this.allSeletedRowCount = this.totalRecountCount - totalCounter;
   }
 }
