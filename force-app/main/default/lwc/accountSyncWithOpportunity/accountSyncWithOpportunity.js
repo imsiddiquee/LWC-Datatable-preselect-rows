@@ -115,8 +115,16 @@ const COLUMNS = [
     fieldName: "opportunityLastModifiedDate",
     initialWidth: 150
   },
-  { label: "Created By", fieldName: "CreatedBy", initialWidth: 120 },
-  { label: "Modified By", fieldName: "LastModifiedBy", initialWidth: 120 }
+  { label: "Created By", fieldName: "createdBy", initialWidth: 120 },
+  { label: "Modified By", fieldName: "lastModifiedBy", initialWidth: 120 },
+  {
+    label: "Cli Succ Manager",
+    fieldName: "clientSuccessManager",
+    typeAttributes: {
+      tooltip: "Client Success Manager"
+    },
+    initialWidth: 140
+  }
 ];
 export default class AccountSyncWithOpportunity extends LightningElement {
   @api componentTitle = "Account Sync";
@@ -141,8 +149,9 @@ export default class AccountSyncWithOpportunity extends LightningElement {
     this.processing = true;
 
     let selectedRows = this.template
-      .querySelector("c-reusable-data-table")
+      .querySelector('[data-id="accountSyncGrid"]')
       .getRows();
+
     //console.log("selectedRows::", JSON.stringify(selectedRows.length));
 
     syncLatestOpportunityWithAccounts({ accounts: selectedRows })
@@ -150,7 +159,7 @@ export default class AccountSyncWithOpportunity extends LightningElement {
         if (response === "Success") {
           this.showToastMessage(
             "success",
-            `With success,total sync ${this.selectedRows.length} records.`
+            `With success,total sync ${selectedRows.length} records.`
           );
         } else {
           this.showToastMessage("error", `With errors reason for ${response}`);

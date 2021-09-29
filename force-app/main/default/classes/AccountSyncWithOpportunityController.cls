@@ -19,6 +19,8 @@ public with sharing class AccountSyncWithOpportunityController {
                         Monthly_Recurring_Revenue__c,
                         Annual_Recurring_Revenue__c,
                         Active__c,
+                        Client_Success_Manager__c,
+                        Client_Success_Manager__r.Name,
                         (
                             SELECT Id,
                             Name,
@@ -130,9 +132,15 @@ public with sharing class AccountSyncWithOpportunityController {
         @AuraEnabled
         public String opportunityLastModifiedDate {get;set;}
         @AuraEnabled
-        public String CreatedBy {get;set;}
+        public String createdBy {get;set;}
         @AuraEnabled
-        public String LastModifiedBy {get;set;}
+        public String lastModifiedBy {get;set;}
+        
+
+        @AuraEnabled
+        public String clientSuccessManagerId {get;set;}
+        @AuraEnabled
+        public String clientSuccessManager {get;set;}
 
         
 
@@ -150,6 +158,8 @@ public with sharing class AccountSyncWithOpportunityController {
             this.accountMRR=String.isBlank(String.valueOf(currentAccount.Monthly_Recurring_Revenue__c))?0:currentAccount.Monthly_Recurring_Revenue__c;
             this.accountARR=String.isBlank(String.valueOf(currentAccount.Annual_Recurring_Revenue__c))?0:currentAccount.Annual_Recurring_Revenue__c;
             this.accountActive=String.valueOf(currentAccount.Active__c);
+            this.clientSuccessManagerId=String.isBlank(currentAccount.Client_Success_Manager__c)?'':currentAccount.Client_Success_Manager__c;
+            this.clientSuccessManager=String.isBlank(currentAccount.Client_Success_Manager__r.Name)?'':currentAccount.Client_Success_Manager__r.Name;
 
             
 
@@ -165,8 +175,8 @@ public with sharing class AccountSyncWithOpportunityController {
                 this.opportunityARR=String.isBlank(String.valueOf(relatedOpp.Annual_Recurring_Revenue__c))?0:relatedOpp.Annual_Recurring_Revenue__c;
                 this.opportunityCloseDate=String.valueOf(relatedOpp.CloseDate);
                 this.opportunityLastModifiedDate=String.valueOf(relatedOpp.LastModifiedDate);
-                this.CreatedBy= relatedOpp.CreatedBy.Name;
-                this.LastModifiedBy= relatedOpp.LastModifiedBy.Name;
+                this.createdBy= relatedOpp.CreatedBy.Name;
+                this.lastModifiedBy= relatedOpp.LastModifiedBy.Name;
             }
         }       
         
