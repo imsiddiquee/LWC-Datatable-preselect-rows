@@ -381,3 +381,17 @@ lwc
                         }
                 }
 
+soql
+	Using "Opportunity Id" how to fetch Account, Opportunity & Contact fields.	
+		select id, Name, (Select Id, Name from contacts), (Select Id, Name From Opportunities where Id='Your Opportunity Id') from Account
+
+
+lwc
+        //compare two array get mismatch item
+        let result = tempPagePreselectedRows.filter(o1 => !tempSelectedRows.some(o2 => o1 === o2.id));
+
+        //remove item from array
+        var index = array.indexOf(item);
+        if (index !== -1) {
+        array.splice(index, 1);
+        }
