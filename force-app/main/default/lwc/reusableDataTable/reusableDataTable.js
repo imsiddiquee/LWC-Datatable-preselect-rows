@@ -11,24 +11,15 @@ export default class ReusableDataTable extends LightningElement {
 
   @api columns = [];
 
-  @track totalSeletedRows;
+  //pre selected row
+  @track totalSeletedRows = 0;
 
-  @track selectedRowsPagesMap = {};
-  @track _preSelectedRows = [];
+  @track selectedRowsPagesMap = [];
   @track prePageSelectedRows = [];
-
-  @api
-  get allPreSelectedRows() {
-    return this._preSelectedRows;
-  }
-
-  set allPreSelectedRows(value) {
-    this._preSelectedRows = value;
-  }
 
   @track _originTagRowSelectionLocal = "LIGHTNING-DATATABLE";
 
-  //table check show/hide base on property.
+  //table check box show/hide base on parent property.
   @track
   isHideChkColumn = true;
   @api
@@ -36,8 +27,7 @@ export default class ReusableDataTable extends LightningElement {
     return this.isHideChkColumn;
   }
   set hideCheckbox(value) {
-    let currentValue = JSON.parse(value);
-    this.isHideChkColumn = currentValue;
+    this.isHideChkColumn = JSON.parse(value);
   }
 
   //col boarder
@@ -88,9 +78,9 @@ export default class ReusableDataTable extends LightningElement {
   //confirmation message
 
   isDialogVisible = false;
-  originalMessage;
-  selectedJobId;
-  selectedUserId;
+
+  selectedJobId = "";
+  selectedUserId = "";
 
   get confirmationDisplayMessage() {
     return `Do you want to proceed job ${this.selectedJobId}?`;
@@ -126,7 +116,6 @@ export default class ReusableDataTable extends LightningElement {
       this.displayRecordPerPage(this.page);
     }
     this.increaseRowOffset();
-
     this.setDelay();
   }
 
@@ -157,13 +146,6 @@ export default class ReusableDataTable extends LightningElement {
 
   decreaseRowOffset() {
     this.rowOffset -= this.pageSize;
-  }
-
-  setDelay() {
-    let timer = window.setTimeout(() => {
-      this.processing = false;
-      window.clearTimeout(timer);
-    }, 300);
   }
 
   exportToCSV() {
@@ -258,8 +240,14 @@ export default class ReusableDataTable extends LightningElement {
     );
   }
 
+  setDelay() {
+    let timer = window.setTimeout(() => {
+      this.processing = false;
+      window.clearTimeout(timer);
+    }, 300);
+  }
+
   getPrePageSelectedRows(page) {
-    //debugger;
     let selectedRowsMap = this.data.map((item) => item.id);
     if (!this.isNotBlank(this.selectedRowsPagesMap[page])) {
       this.selectedRowsPagesMap[page] = selectedRowsMap;
@@ -270,11 +258,6 @@ export default class ReusableDataTable extends LightningElement {
   }
 
   handleRowSelection(event) {
-    //debugger;
-    // if (this.isFromPageEvent === true) {
-    //   this.isFromPageEvent = false;
-    //   return;
-    // }
     if (this._originTagRowSelectionLocal === "LIGHTNING-DATATABLE") {
       let selectedRowsMap = JSON.parse(
         JSON.stringify(event.detail.selectedRows)

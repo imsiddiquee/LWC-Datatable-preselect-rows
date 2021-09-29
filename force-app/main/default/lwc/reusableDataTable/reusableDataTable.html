@@ -23,10 +23,12 @@
         <lightning-badge label={totalRecountCount}></lightning-badge> records
       </h3>
 
-      <h3 slot="title">
-        Total selected rows
-        <lightning-badge label={totalSeletedRows}></lightning-badge>
-      </h3>
+      <template if:false={isHideChkColumn}>
+        <h3 slot="title" class="slds-text-color_success">
+          Total selected rows
+          <lightning-badge label={totalSeletedRows}></lightning-badge>
+        </h3>
+      </template>
 
       <lightning-datatable
         class={columnBoarderClass}

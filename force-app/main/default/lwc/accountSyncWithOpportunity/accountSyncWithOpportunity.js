@@ -124,8 +124,6 @@ export default class AccountSyncWithOpportunity extends LightningElement {
   @track
   accountData = [];
 
-  @track preSelectedRows;
-
   accountColumns = COLUMNS;
   syncMessage = "";
   processing = false;
@@ -179,9 +177,6 @@ export default class AccountSyncWithOpportunity extends LightningElement {
     getLatestOpportunityRelatedAccounts()
       .then((data) => {
         if (data) {
-          this.preSelectedRows = data.selectedIdSet;
-          //console.log(JSON.stringify(this.preSelectedRows));
-
           this.accountData = data.accList.map((item) => {
             let accountUrl = BASE_URL + item.accountId;
             let oppUrl = BASE_URL + item.opportunityId;
