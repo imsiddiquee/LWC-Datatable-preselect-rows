@@ -140,6 +140,34 @@ export default class AccountSyncWithOpportunity extends LightningElement {
   handleSync() {
     this.processing = true;
 
+    let selectedRows = this.template
+      .querySelector("c-reusable-data-table")
+      .getRows();
+    //console.log("selectedRows::", JSON.stringify(selectedRows.length));
+
+    syncLatestOpportunityWithAccounts({ accounts: selectedRows })
+      .then((response) => {
+        if (response === "Success") {
+          this.showToastMessage(
+            "success",
+            `With success,total sync ${this.selectedRows.length} records.`
+          );
+        } else {
+          this.showToastMessage("error", `With errors reason for ${response}`);
+        }
+      })
+      .catch((error) => {
+        console.log(error.body.message);
+      })
+      .finally(() => {
+        //this.processing = false;
+        this.handleLoadAccountRelatedLatestOpportunity();
+      });
+  }
+
+  handleSync2() {
+    this.processing = true;
+
     syncLatestOpportunityWithAccounts({ accounts: this.accountData })
       .then((response) => {
         if (response === "Success") {

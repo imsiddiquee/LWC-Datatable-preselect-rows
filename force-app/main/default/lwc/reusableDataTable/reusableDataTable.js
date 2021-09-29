@@ -15,7 +15,8 @@ export default class ReusableDataTable extends LightningElement {
   @track allSeletedRowCount = 0;
 
   @track selectedRowsPagesMap = [];
-  @track prePageSelectedRows = [];
+  @track unSelectedRowsPagesMap = [];
+  @track prePageSelectedRows = []; //used to dispaly on ui
 
   @track _originTagRowSelectionLocal = "LIGHTNING-DATATABLE";
 
@@ -88,7 +89,24 @@ export default class ReusableDataTable extends LightningElement {
 
   // Parent call this event to know data-table selected rows.
   @api getRows() {
-    return this.template.querySelector("lightning-datatable").getSelectedRows();
+    //return this.template.querySelector("lightning-datatable").getSelectedRows();
+
+    let unSelectedRows = [];
+
+    JSON.parse(JSON.stringify(this.unSelectedRowsPagesMap)).forEach(
+      (rowsList) => {
+        if (rowsList !== null) {
+          unSelectedRows = [...unSelectedRows, ...rowsList];
+        }
+      }
+    );
+
+    let result = [];
+    result = JSON.parse(JSON.stringify(this.items)).filter(
+      (row) => !unSelectedRows.includes(row.id)
+    );
+
+    return result;
   }
 
   isNotBlank(checkString) {
@@ -248,34 +266,55 @@ export default class ReusableDataTable extends LightningElement {
   }
 
   getPrePageSelectedRows(page) {
-    let selectedRowsMap = this.data.map((item) => item.id);
-    if (!this.isNotBlank(this.selectedRowsPagesMap[page])) {
-      this.selectedRowsPagesMap[page] = selectedRowsMap;
+    try {
+      let selectedRowsMap = this.data.map((item) => item.id);
+      if (!this.isNotBlank(this.selectedRowsPagesMap[page])) {
+        this.selectedRowsPagesMap[page] = selectedRowsMap;
+      }
+      this.prePageSelectedRows = this.selectedRowsPagesMap[page];
+      this.getTotalSeletedRows();
+      this._originTagRowSelectionLocal = "button";
+    } catch (error) {
+      console.log(error);
     }
-    this.prePageSelectedRows = this.selectedRowsPagesMap[page];
-    this.getTotalSeletedRows();
-    this._originTagRowSelectionLocal = "button";
   }
 
   handleRowSelection(event) {
-    if (this._originTagRowSelectionLocal === "LIGHTNING-DATATABLE") {
-      let selectedRowsMap = JSON.parse(
-        JSON.stringify(event.detail.selectedRows)
-      );
+    try {
+      if (this._originTagRowSelectionLocal === "LIGHTNING-DATATABLE") {
+        let selectedRowsMap = JSON.parse(
+          JSON.stringify(event.detail.selectedRows)
+        );
 
-      this.selectedRowsPagesMap[this.page] = selectedRowsMap.map((p) => p.id);
-      this.getTotalSeletedRows();
-    } else {
-      this._originTagRowSelectionLocal = event.target.tagName;
+        //unselected
+
+        let unSelectedRowsMap = this.prePageSelectedRows.filter(
+          (o1) => !selectedRowsMap.some((o2) => o1 === o2.id)
+        );
+        this.unSelectedRowsPagesMap[this.page] = unSelectedRowsMap;
+
+        //selected
+        this.selectedRowsPagesMap[this.page] = selectedRowsMap.map((p) => p.id);
+        this.getTotalSeletedRows();
+        this._originTagRowSelectionLocal = event.target.tagName;
+      } else {
+        this._originTagRowSelectionLocal = event.target.tagName;
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
   getTotalSeletedRows() {
-    let totalCounter = 0;
-    Object.values(this.selectedRowsPagesMap).forEach((rowsList) => {
-      totalCounter += this.pageSize - rowsList.length;
-    });
+    try {
+      let totalCounter = 0;
+      Object.values(this.selectedRowsPagesMap).forEach((rowsList) => {
+        totalCounter += this.pageSize - rowsList.length;
+      });
 
-    this.allSeletedRowCount = this.totalRecountCount - totalCounter;
+      this.allSeletedRowCount = this.totalRecountCount - totalCounter;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
