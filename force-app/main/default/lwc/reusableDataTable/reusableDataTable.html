@@ -23,13 +23,6 @@
         <lightning-badge label={totalRecountCount}></lightning-badge> records
       </h3>
 
-      <template if:false={isHideChkColumn}>
-        <h3 slot="title" class="slds-text-color_success">
-          Total selected rows
-          <lightning-badge label={allSeletedRowCount}></lightning-badge>
-        </h3>
-      </template>
-
       <lightning-datatable
         class={columnBoarderClass}
         key-field="id"
@@ -37,10 +30,8 @@
         onrowaction={handleRowAction}
         show-row-number-column
         row-number-offset={rowOffset}
-        hide-checkbox-column={isHideChkColumn}
+        hide-checkbox-column="true"
         columns={columns}
-        selected-rows={prePageSelectedRows}
-        onrowselection={handleRowSelection}
       >
       </lightning-datatable>
 

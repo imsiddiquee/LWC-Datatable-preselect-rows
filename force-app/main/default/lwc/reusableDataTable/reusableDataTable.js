@@ -6,43 +6,9 @@ import AbortTheSelectedJob from "@salesforce/apex/CronTriggerController.AbortThe
 
 export default class ReusableDataTable extends LightningElement {
   processing = false;
-
   @api cardTitle = "";
 
   @api columns = [];
-
-  //pre selected row
-  @track allSeletedRowCount = 0;
-
-  @track selectedRowsPagesMap = [];
-  @track unSelectedRowsPagesMap = [];
-  @track prePageSelectedRows = []; //used to dispaly on ui
-
-  @track _originTagRowSelectionLocal = "LIGHTNING-DATATABLE";
-
-  //table check box show/hide base on parent property.
-  @track
-  isHideChkColumn = true;
-  @api
-  get hideCheckbox() {
-    return this.isHideChkColumn;
-  }
-  set hideCheckbox(value) {
-    this.isHideChkColumn = value === "true" ? true : false;
-  }
-
-  //col boarder
-
-  @track
-  columnBoarderClass = "";
-  @api
-  get columnBoarder() {
-    return this.columnBoarderClass;
-  }
-  set columnBoarder(value) {
-    this.columnBoarderClass = value === "true" ? "slds-table_col-bordered" : "";
-  }
-
   rowOffset = 0;
 
   @track page = 1; //this will initialize 1st page
@@ -69,9 +35,7 @@ export default class ReusableDataTable extends LightningElement {
     //slice will take 0th element and ends with 5, but it doesn't include 5th element
     //so 0 to 4th rows will be displayed in the table
     this.data = this.items.slice(0, this.pageSize);
-    this.getPrePageSelectedRows(1);
     this.endingRecord = this.pageSize;
-    this._originTagRowSelectionLocal = "LIGHTNING-DATATABLE";
 
     // this.error = undefined;
   }
@@ -79,40 +43,24 @@ export default class ReusableDataTable extends LightningElement {
   //confirmation message
 
   isDialogVisible = false;
-
-  selectedJobId = "";
-  selectedUserId = "";
+  originalMessage;
+  selectedJobId;
+  selectedUserId;
 
   get confirmationDisplayMessage() {
     return `Do you want to proceed job ${this.selectedJobId}?`;
   }
 
-  // Parent call this event to know data-table selected rows.
-  @api getRows() {
-    //return this.template.querySelector("lightning-datatable").getSelectedRows();
+  //col boarder
 
-    let unSelectedRows = [];
-
-    JSON.parse(JSON.stringify(this.unSelectedRowsPagesMap)).forEach(
-      (rowsList) => {
-        if (rowsList !== null) {
-          unSelectedRows = [...unSelectedRows, ...rowsList];
-        }
-      }
-    );
-
-    let result = [];
-    result = JSON.parse(JSON.stringify(this.items)).filter(
-      (row) => !unSelectedRows.includes(row.id)
-    );
-
-    return result;
+  @track
+  columnBoarderClass = "";
+  @api
+  get columnBoarder() {
+    return this.columnBoarderClass;
   }
-
-  isNotBlank(checkString) {
-    return (
-      checkString !== "" && checkString !== null && checkString !== undefined
-    );
+  set columnBoarder(value) {
+    this.columnBoarderClass = value === "true" ? "slds-table_col-bordered" : "";
   }
 
   //clicking on previous button this method will be called
@@ -134,6 +82,7 @@ export default class ReusableDataTable extends LightningElement {
       this.displayRecordPerPage(this.page);
     }
     this.increaseRowOffset();
+
     this.setDelay();
   }
 
@@ -152,7 +101,7 @@ export default class ReusableDataTable extends LightningElement {
         : this.endingRecord;
 
     this.data = this.items.slice(this.startingRecord, this.endingRecord);
-    this.getPrePageSelectedRows(page);
+
     //increment by 1 to display the startingRecord count,
     //so for 2nd page, it will show "Displaying 6 to 10 of 23 records. Page 2 of 5"
     this.startingRecord = this.startingRecord + 1;
@@ -164,6 +113,13 @@ export default class ReusableDataTable extends LightningElement {
 
   decreaseRowOffset() {
     this.rowOffset -= this.pageSize;
+  }
+
+  setDelay() {
+    let timer = window.setTimeout(() => {
+      this.processing = false;
+      window.clearTimeout(timer);
+    }, 300);
   }
 
   exportToCSV() {
@@ -256,65 +212,5 @@ export default class ReusableDataTable extends LightningElement {
     this.dispatchEvent(
       new CustomEvent("refreshrecords", { payload: this.selectedUserId })
     );
-  }
-
-  setDelay() {
-    let timer = window.setTimeout(() => {
-      this.processing = false;
-      window.clearTimeout(timer);
-    }, 300);
-  }
-
-  getPrePageSelectedRows(page) {
-    try {
-      let selectedRowsMap = this.data.map((item) => item.id);
-      if (!this.isNotBlank(this.selectedRowsPagesMap[page])) {
-        this.selectedRowsPagesMap[page] = selectedRowsMap;
-      }
-      this.prePageSelectedRows = this.selectedRowsPagesMap[page];
-      this.getTotalSeletedRows();
-      this._originTagRowSelectionLocal = "button";
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  handleRowSelection(event) {
-    try {
-      if (this._originTagRowSelectionLocal === "LIGHTNING-DATATABLE") {
-        let selectedRowsMap = JSON.parse(
-          JSON.stringify(event.detail.selectedRows)
-        );
-
-        //unselected
-
-        let unSelectedRowsMap = this.prePageSelectedRows.filter(
-          (o1) => !selectedRowsMap.some((o2) => o1 === o2.id)
-        );
-        this.unSelectedRowsPagesMap[this.page] = unSelectedRowsMap;
-
-        //selected
-        this.selectedRowsPagesMap[this.page] = selectedRowsMap.map((p) => p.id);
-        this.getTotalSeletedRows();
-        this._originTagRowSelectionLocal = event.target.tagName;
-      } else {
-        this._originTagRowSelectionLocal = event.target.tagName;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  getTotalSeletedRows() {
-    try {
-      let totalCounter = 0;
-      Object.values(this.selectedRowsPagesMap).forEach((rowsList) => {
-        totalCounter += this.pageSize - rowsList.length;
-      });
-
-      this.allSeletedRowCount = this.totalRecountCount - totalCounter;
-    } catch (error) {
-      console.log(error);
-    }
   }
 }
