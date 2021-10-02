@@ -386,12 +386,23 @@ soql
 		select id, Name, (Select Id, Name from contacts), (Select Id, Name From Opportunities where Id='Your Opportunity Id') from Account
 
 
-lwc
-        //compare two array get mismatch item
-        let result = tempPagePreselectedRows.filter(o1 => !tempSelectedRows.some(o2 => o1 === o2.id));
+lwc/javascript filter two array
 
-        //remove item from array
-        var index = array.indexOf(item);
-        if (index !== -1) {
-        array.splice(index, 1);
-        }
+		//compare two array get mismatch item
+		let result = tempPagePreselectedRows.filter(o1 => !tempSelectedRows.some(o2 => o1 === o2.id));
+		
+		const numOne=[1,2,3,4,5];
+		const numTwo=[0,2,8,7,9,1];
+		const duplicate=[...new Set(numOne)].filter(item=>numTwo.includes(item));
+		
+		//removed falsy values from an array
+		let arr=[0,'hello','',NaN,1,true,undefined,false];
+		arr=arr.filter(Boolean);
+		arr=arr.filter(a=>Boolean(a));
+		arr=arr.filter(a=>!!a);
+
+		//remove item from array
+		var index = array.indexOf(item);
+		if (index !== -1) {
+		  array.splice(index, 1);
+		}

@@ -271,8 +271,11 @@ export default class ReusableDataTableWithPreselect extends LightningElement {
       if (!this.isNotBlank(this.selectedRowsPagesMap[page])) {
         this.selectedRowsPagesMap[page] = selectedRowsMap;
       }
+
       this.prePageSelectedRows = this.selectedRowsPagesMap[page];
+
       this.getTotalSeletedRows();
+
       this._originTagRowSelectionLocal = "button";
     } catch (error) {
       console.log(error);
@@ -282,20 +285,19 @@ export default class ReusableDataTableWithPreselect extends LightningElement {
   handleRowSelection(event) {
     try {
       if (this._originTagRowSelectionLocal === "LIGHTNING-DATATABLE") {
-        let selectedRowsMap = JSON.parse(
-          JSON.stringify(event.detail.selectedRows)
-        );
+        let selectedRowsMap = event.target.selectedRows;
 
-        //unselected
-
+        //unselected rows store page-wise.
         let unSelectedRowsMap = this.prePageSelectedRows.filter(
-          (o1) => !selectedRowsMap.some((o2) => o1 === o2.id)
+          (item) => !selectedRowsMap.includes(item)
         );
         this.unSelectedRowsPagesMap[this.page] = unSelectedRowsMap;
 
-        //selected
-        this.selectedRowsPagesMap[this.page] = selectedRowsMap.map((p) => p.id);
+        //selected rows store page-wise.
+        this.selectedRowsPagesMap[this.page] = [...selectedRowsMap];
+
         this.getTotalSeletedRows();
+
         this._originTagRowSelectionLocal = event.target.tagName;
       } else {
         this._originTagRowSelectionLocal = event.target.tagName;
