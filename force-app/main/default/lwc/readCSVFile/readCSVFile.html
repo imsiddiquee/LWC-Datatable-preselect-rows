@@ -1,0 +1,40 @@
+<template>
+  <lightning-card icon-name="custom:custom19" title="Read CSV File Demo In LWC">
+    <div style="margin-left: 3%">
+      <lightning-file-upload
+        accept={acceptedFormats}
+        label="Attach receipt"
+        multiple="multiple"
+        onuploadfinished={handleUploadFinished}
+        record-id={recordId}
+      ></lightning-file-upload>
+    </div>
+
+    <div class="slds-m-around_medium">
+      <lightning-input
+        type="file"
+        accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf"
+        label="Attachment"
+        onchange={openfileUpload}
+      ></lightning-input>
+    </div>
+
+    <div class="slds-m-around_medium">
+      <lightning-button
+        label="Submit"
+        onclick={handleSubmit}
+        variant="brand"
+      ></lightning-button>
+    </div>
+
+    <div if:true={error}>{error}</div>
+    <br />
+
+    <lightning-datatable
+      columns={columns}
+      data={data}
+      hide-checkbox-column="true"
+      key-field="id"
+    ></lightning-datatable>
+  </lightning-card>
+</template>
