@@ -7,7 +7,7 @@ const BASE_URL = `https://${window.location.hostname}/`;
 
 const COLUMNS = [
   {
-    label: "Acc Name",
+    label: "Exist Acc Name",
     fieldName: "accountUrl",
     wrapText: true,
     initialWidth: 100,
@@ -16,7 +16,7 @@ const COLUMNS = [
       label: {
         fieldName: "accountName"
       },
-      tooltip: "Acc Name",
+      tooltip: "Exist Acc Name",
       target: "_blank"
     }
   },

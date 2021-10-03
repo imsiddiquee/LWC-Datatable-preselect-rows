@@ -17,4 +17,13 @@ public with sharing class ReadCSVFileController {
     //insert listTask;
     return csvRecordDataList;
   }
+
+  @AuraEnabled
+  public static List<Account> getExistAccounts(List<String> accountIds) {
+    try {
+      return [SELECT Id, Name FROM Account WHERE Name IN :accountIds];
+    } catch (Exception e) {
+      throw new AuraHandledException(e.getMessage());
+    }
+  }
 }

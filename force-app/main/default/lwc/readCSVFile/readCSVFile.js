@@ -1,14 +1,42 @@
-import { LightningElement, track, api } from "lwc";
+import { LightningElement, track } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
-import readCSV from "@salesforce/apex/ReadCSVFileController.readCSV";
+import { csvToArray } from "c/utils";
+import getExistAccounts from "@salesforce/apex/ReadCSVFileController.getExistAccounts";
 
-const COLUMNS = [];
+const BASE_URL = `https://${window.location.hostname}/`;
+const ACC_COLUMN = "accountName";
+const EMAIL_COLUMN = "email";
+const COLUMN = [
+  {
+    label: "Exist Account",
+    fieldName: "accountUrl",
+    wrapText: true,
+    initialWidth: 100,
+    type: "url",
+    typeAttributes: {
+      label: {
+        fieldName: ACC_COLUMN
+      },
+      tooltip: "Acc Name",
+      target: "_blank"
+    },
+    cellAttributes: {
+      alignment: "left",
+      class: { fieldName: "accountColor" },
+      iconName: { fieldName: "accountIconName" },
+      iconPosition: "right"
+    }
+  }
+];
 
 export default class ReadCSVFile extends LightningElement {
-  @api recordId = "7011R000000XLBsQAO";
   @track error;
-  @track columns;
+  @track columns = [];
   @track data;
+  @track wrongData;
+
+  @track
+  fileData;
 
   // accepted parameters
   get acceptedFormats() {
@@ -16,19 +44,19 @@ export default class ReadCSVFile extends LightningElement {
   }
 
   connectedCallback() {
-    this.columns = [{ label: "Name", fieldName: "name" }];
-    this.data = [{ name: "test" }];
-    console.log(this.columns.length);
-    console.log(this.data.length);
+    // this.columns = [{ label: "Name", fieldName: "name" }];
+    // this.data = [{ name: "test" }];
+    // console.log(this.columns.length);
+    // console.log(this.data.length);
   }
 
-  fileData;
   openfileUpload(event) {
     const file = event.target.files[0];
     var reader = new FileReader();
     reader.onload = () => {
       let base64 = reader.result.split(",")[1];
-      let fileContent = base64.replace("data:;base64,", ""); //convert base64 string to a text as a decoded string !
+      //convert base64 string to a text as a decoded string !
+      let fileContent = base64.replace("data:;base64,", "");
       fileContent = window.atob(fileContent);
 
       this.fileData = {
@@ -40,57 +68,6 @@ export default class ReadCSVFile extends LightningElement {
     reader.readAsDataURL(file);
   }
 
-  handleSubmit2() {
-    const { filename, base64 } = this.fileData;
-    let showData = "";
-    //console.log("Email ==> " + this.taskRecord.Subject);
-    readCSV({ base64: base64 }).then((result) => {
-      console.log("result", result);
-
-      if (result.length > 0) {
-        //defined columns
-        this.columns = result
-          .shift()
-          .split(",")
-          .map((item) => {
-            let columnLabel = item;
-            let columnFieldName = item;
-
-            return {
-              label: columnLabel,
-              fieldName: columnFieldName
-            };
-          });
-
-        let columnLength = this.columns.length;
-        let myJson = {};
-
-        showData = result.map((item) => {
-          let rawData = item.split(",");
-
-          for (let index = 0; index < columnLength; index++) {
-            let rawColumn = Object.values(this.columns[index])[1];
-            let rawColumnValue = rawData[index];
-
-            myJson[rawColumn] = rawColumnValue;
-
-            //this.data = [{ name: "test" }];
-          }
-
-          return {
-            ...myJson
-          };
-        });
-      }
-
-      this.fileData = null;
-      console.log("show data", showData);
-      this.data = showData;
-      //let title = "${filename} uploaded successfully!!";
-      //this.toast(title);
-    });
-  }
-
   toast(title) {
     const toastEvent = new ShowToastEvent({
       title,
@@ -99,16 +76,89 @@ export default class ReadCSVFile extends LightningElement {
     this.dispatchEvent(toastEvent);
   }
 
+  removeItem(arr, item) {
+    return arr.filter((f) => f !== item);
+  }
+
+  isNotBlank(checkString) {
+    return (
+      checkString !== "" && checkString !== null && checkString !== undefined
+    );
+  }
+
+  validateEmail(email) {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
   handleSubmit() {
     const { filename, base64 } = this.fileData;
 
-    const csvData = this.csvToArray(base64);
-    this.columns = csvData.columns;
+    //get csv file data.
+    const csvData = csvToArray(base64);
+    this.data = csvData.data;
 
-    console.log(csvData);
+    //Get wrong data from dublicate email
+    let tempWrongData = [];
+
+    if (csvData.columns.some((p) => p === EMAIL_COLUMN)) {
+      let uniqueEmails = [
+        ...new Set(csvData.data.map((item) => item[EMAIL_COLUMN]))
+      ];
+
+      //check null
+      const nullEmails = csvData.data.filter(
+        (item) => !this.isNotBlank(item[EMAIL_COLUMN])
+      );
+      tempWrongData = [...tempWrongData, ...nullEmails];
+      uniqueEmails = uniqueEmails.filter(Boolean);
+
+      //check valid format email address
+      //and check dublicate
+      uniqueEmails.forEach((uEmail) => {
+        if (!this.validateEmail(uEmail)) {
+          const wrongEmailFormatRows = csvData.data.filter(
+            (item) => item[EMAIL_COLUMN] === uEmail
+          );
+          tempWrongData = [...tempWrongData, ...wrongEmailFormatRows];
+        } else {
+          const dublicateRows = csvData.data.filter(
+            (item) => item[EMAIL_COLUMN] === uEmail
+          );
+          if (dublicateRows.length > 1) {
+            tempWrongData = [...tempWrongData, ...dublicateRows];
+          }
+        }
+      });
+    }
+
+    this.wrongData = tempWrongData;
+
+    if (csvData.columns.some((p) => p === ACC_COLUMN)) {
+      debugger;
+      //this.wrongData = tempWrongData;
+      // check unique accounts
+      let uniqueAccounts = [
+        ...new Set(csvData.data.map((item) => item[ACC_COLUMN]))
+      ];
+
+      //check null
+      const nullAccounts = csvData.data.filter(
+        (item) => !this.isNotBlank(item[ACC_COLUMN])
+      );
+      tempWrongData = [...tempWrongData, ...nullAccounts];
+      uniqueAccounts = uniqueAccounts.filter(Boolean);
+      this.wrongData = tempWrongData;
+
+      this.getDataBaseAccounts(uniqueAccounts);
+    }
 
     //format columns
-    this.columns = csvData.columns.map((item) => {
+    //accountName
+    //let tempColumns = this.removeItem(csvData.columns, ACC_COLUMN);
+
+    let tempColumns = csvData.columns.map((item) => {
       let columnLabel = item;
       let columnFieldName = item;
 
@@ -117,38 +167,89 @@ export default class ReadCSVFile extends LightningElement {
         fieldName: columnFieldName
       };
     });
+    let tempColumnResult = tempColumns.concat(COLUMN);
+    this.columns = tempColumnResult;
+    //this.columns = csvData.columns;
 
     //format data
     this.data = csvData.data;
+    console.log(csvData.data);
   }
 
-  csvToArray(str, delimiter = ",") {
-    // slice from start of text to the first \n index
-    // use split to create an array from string by delimiter
-    const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+  getDataBaseAccounts(uniqueAccounts) {
+    debugger;
+    let tempData = JSON.parse(JSON.stringify(this.data));
+    let tempWrongData = JSON.parse(JSON.stringify(this.wrongData));
 
-    // slice from \n index + 1 to the end of the text
-    // use split to create an array of each csv value row
-    const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+    getExistAccounts({ accountIds: uniqueAccounts })
+      .then((result) => {
+        result.forEach((accItem) => {
+          debugger;
+          const existAccounts = tempData.filter(
+            (item) => item[ACC_COLUMN] === accItem.Name
+          );
 
-    // Map the rows
-    // split values from each row into an array
-    // use headers.reduce to create an object
-    // object properties derived from headers:values
-    // the object passed as an element of the array
-    const arr = rows.map(function (row) {
-      const values = row.split(delimiter);
-      const el = headers.reduce(function (object, header, index) {
-        object[header] = values[index];
-        return object;
-      }, {});
-      return el;
-    });
+          if (existAccounts.length > 0) {
+            tempWrongData = [...tempWrongData, ...existAccounts];
+          }
+        });
+      })
+      .catch((error) => {
+        this.error = error;
+        this.dispatchEvent(
+          new ShowToastEvent({
+            title: "Error!!",
+            message: JSON.stringify(error),
+            variant: "error"
+          })
+        );
+      })
+      .finally(() => {
+        this.wrongData = tempWrongData;
+      });
+  }
 
-    // return the array
-    return {
-      columns: headers,
-      data: arr
-    };
+  handleUniqueAcount() {
+    let tempData = Object.values(this.data);
+
+    getExistAccounts({ accountIds: this.data.map((item) => item.accountName) })
+      .then((result) => {
+        console.log("result", result);
+
+        result.map((item) => {
+          debugger;
+          let index = tempData.findIndex(
+            (aItem) => aItem[ACC_COLUMN] === item.Name
+          );
+          let temp = tempData[index];
+
+          let accountColor = "slds-text-color_error";
+
+          let accountIconName = "utility:info";
+          temp.accountColor = accountColor;
+          temp.accountIconName = accountIconName;
+          temp.accountUrl = BASE_URL + item.Id;
+          tempData[index] = temp;
+
+          return {
+            item
+          };
+        });
+
+        console.log("tempData", tempData);
+      })
+      .catch((error) => {
+        this.error = error;
+        this.dispatchEvent(
+          new ShowToastEvent({
+            title: "Error!!",
+            message: JSON.stringify(error),
+            variant: "error"
+          })
+        );
+      })
+      .finally(() => {
+        this.data = tempData;
+      });
   }
 }

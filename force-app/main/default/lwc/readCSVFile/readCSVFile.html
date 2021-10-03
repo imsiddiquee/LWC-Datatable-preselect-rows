@@ -27,12 +27,29 @@
       ></lightning-button>
     </div>
 
+    <div class="slds-m-around_medium">
+      <lightning-button
+        label="Check Accounts are Unique"
+        onclick={handleUniqueAcount}
+        variant="brand"
+      ></lightning-button>
+    </div>
+
     <div if:true={error}>{error}</div>
     <br />
 
     <lightning-datatable
       columns={columns}
       data={data}
+      hide-checkbox-column="true"
+      key-field="id"
+    ></lightning-datatable>
+
+    <br />
+
+    <lightning-datatable
+      columns={columns}
+      data={wrongData}
       hide-checkbox-column="true"
       key-field="id"
     ></lightning-datatable>
