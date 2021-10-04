@@ -1,5 +1,5 @@
 import { LightningElement } from "lwc";
-import { exportCSVFileWithDynamicHeader } from "c/utils";
+import { exportCSVFileWithDynamicHeader } from "c/ldsUtils";
 
 export default class CsvExportApp extends LightningElement {
   userData = [
