@@ -459,3 +459,47 @@ lwc
     variable
         markers=[];
         error;
+    method
+        getOrderItems
+        getProducts
+        wiredGetOrderItems
+        setOrderItems
+        handleDrop
+        createRecord
+        formatNewsData
+        updateRecord
+        handleOrderItemDelete
+        isModified
+        saveOrderItem
+        deleteOrderItem
+        handleProductSelected
+        handleNavigateToRecord
+        getPicklistValues
+        handleSearchKeyChange
+        handleMaxPriceChange
+        handleViewDetailsClick
+
+default record type id/recordtypeid
+    recordTypeId: '012000000000000AAA',
+
+formatNewsData(res){
+    this.result = res.map((item, index)=>{
+        let id = `new_${index+1}`;
+        let date = new Date(item.publishedAt).toDateString()
+        let name = item.source.name;
+        return { ...item, id: id, name: name, date: date}
+    })
+
+}
+
+get/set method in lwc
+
+    _product;
+
+    @api
+    get product() {
+        return this._product;
+    }
+    set product(value) {
+        this._product = value;
+    }
