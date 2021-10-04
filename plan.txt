@@ -406,3 +406,56 @@ lwc/javascript filter two array
 		if (index !== -1) {
 		  array.splice(index, 1);
 		}
+
+soql/apex standard practice
+standard names
+    method
+        getOrderItems
+        getProducts
+    variable declare
+        String key, whereClause = '';
+        Decimal maxPrice;
+        String[] categories, materials, levels, criteria = new List<String>{};
+
+public with sharing class OrderController {
+    @AuraEnabled(Cacheable=true)
+    public static Order_Item__c[] getOrderItems(Id orderId) {
+        return [
+            SELECT
+                Id,
+                Qty_S__c,
+                Qty_M__c,
+                Qty_L__c,
+                Price__c,
+                Product__r.Name,
+                Product__r.MSRP__c,
+                Product__r.Picture_URL__c
+            FROM Order_Item__c
+            WHERE Order__c = :orderId
+            WITH SECURITY_ENFORCED
+        ];
+    }
+}
+
+@AuraEnabled(Cacheable=true)
+public static Product__c[] getSimilarProducts(Id productId, Id familyId) {
+    return [
+        SELECT
+            Id,
+            Name,
+            MSRP__c,
+            Description__c,
+            Category__c,
+            Level__c,
+            Picture_URL__c,
+            Material__c
+        FROM Product__c
+        WHERE Product_Family__c = :familyId AND Id != :productId
+        WITH SECURITY_ENFORCED
+    ];
+}
+
+lwc
+    variable
+        markers=[];
+        error;

@@ -18,7 +18,7 @@
 
     <div class="slds-m-around_medium">
       <lightning-button
-        label="Submit"
+        label="Import"
         onclick={handleSubmit}
         variant="brand"
       ></lightning-button>
@@ -52,5 +52,17 @@
         key-field="id"
       ></lightning-datatable>
     </div>
+    <template if:false={data.length}>
+      <c-error-panel
+        friendly-message="To load data import a CSV file."
+      ></c-error-panel>
+    </template>
+
+    <template if:true={error}>
+      <c-error-panel
+        friendly-message="Error on importing csv data."
+        errors={error}
+      ></c-error-panel>
+    </template>
   </lightning-card>
 </template>

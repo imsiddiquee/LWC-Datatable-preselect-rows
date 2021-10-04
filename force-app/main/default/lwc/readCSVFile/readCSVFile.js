@@ -1,10 +1,10 @@
 import { LightningElement, track } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
-import { csvToArray } from "c/utils";
+import { csvToArray } from "c/ldsUtils";
 import getExistAccounts from "@salesforce/apex/ReadCSVFileController.getExistAccounts";
 
 /**
- * deploy==>util.js
+ * deploy==>ldsUtils.js
  */
 
 const ACC_COLUMN = "accountName";
@@ -40,7 +40,6 @@ export default class ReadCSVFile extends LightningElement {
         filename: file.name,
         base64: fileContent
       };
-      console.log(this.fileData);
     };
     reader.readAsDataURL(file);
     this.toast("File uplodad successfully!");
@@ -172,6 +171,7 @@ export default class ReadCSVFile extends LightningElement {
         });
       })
       .catch((error) => {
+        this.handleRefresh();
         this.error = error;
         this.dispatchEvent(
           new ShowToastEvent({
@@ -202,6 +202,7 @@ export default class ReadCSVFile extends LightningElement {
   }
 
   handleRefresh() {
+    this.fileData = null;
     this.data = [];
     this.wrongData = [];
   }
