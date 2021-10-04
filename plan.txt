@@ -412,6 +412,9 @@ standard names
     method
         getOrderItems
         getProducts
+        getSingleContact
+        findRelatedContacts
+        getRelatedSpaces
     variable declare
         String key, whereClause = '';
         Decimal maxPrice;
@@ -462,6 +465,7 @@ lwc
     method
         getOrderItems
         getProducts
+        getContactList
         wiredGetOrderItems
         setOrderItems
         handleDrop
@@ -494,12 +498,15 @@ formatNewsData(res){
 
 get/set method in lwc
 
-    _product;
-
-    @api
-    get product() {
-        return this._product;
-    }
-    set product(value) {
-        this._product = value;
-    }
+  _product;
+  @api
+  get product() {
+    return this._product;
+  }
+  set product(value) {
+    this._product = value;
+  }
+set product information
+    this._product="test Product";
+get product information
+    this.product;

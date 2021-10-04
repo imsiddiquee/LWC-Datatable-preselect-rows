@@ -1,7 +1,8 @@
-import { LightningElement, track } from "lwc";
+import { api, LightningElement, track } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { csvToArray } from "c/ldsUtils";
 import getExistAccounts from "@salesforce/apex/ReadCSVFileController.getExistAccounts";
+import { reduceErrors } from "c/ldsUtils";
 
 /**
  * deploy==>ldsUtils.js
@@ -25,6 +26,18 @@ export default class ReadCSVFile extends LightningElement {
   // accepted parameters
   get acceptedFormats() {
     return [".csv"];
+  }
+
+  _product;
+  @api
+  get product() {
+    return this._product;
+  }
+  set product(value) {
+    this._product = value;
+  }
+  connectedCallback() {
+    this._product = "test product";
   }
 
   openfileUpload(event) {
@@ -176,7 +189,7 @@ export default class ReadCSVFile extends LightningElement {
         this.dispatchEvent(
           new ShowToastEvent({
             title: "Error!!",
-            message: JSON.stringify(error),
+            message: reduceErrors(error).join(", "),
             variant: "error"
           })
         );
@@ -205,5 +218,6 @@ export default class ReadCSVFile extends LightningElement {
     this.fileData = null;
     this.data = [];
     this.wrongData = [];
+    console.log(this.product);
   }
 }
