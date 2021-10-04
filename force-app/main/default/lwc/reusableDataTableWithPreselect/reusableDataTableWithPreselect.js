@@ -1,7 +1,7 @@
 import { LightningElement, api, track } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { refreshApex } from "@salesforce/apex";
-import { exportCSVFileWithDynamicHeader } from "c/utils";
+import { exportCSVFileWithDynamicHeader } from "c/ldsUtils";
 import AbortTheSelectedJob from "@salesforce/apex/CronTriggerController.AbortTheSelectedJob";
 
 export default class ReusableDataTableWithPreselect extends LightningElement {
