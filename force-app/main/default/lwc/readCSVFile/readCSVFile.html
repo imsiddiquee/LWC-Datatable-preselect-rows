@@ -1,19 +1,16 @@
 <template>
-  <lightning-card icon-name="custom:custom19" title="Read CSV File Demo In LWC">
-    <div style="margin-left: 3%">
-      <lightning-file-upload
-        accept={acceptedFormats}
-        label="Attach receipt"
-        multiple="multiple"
-        onuploadfinished={handleUploadFinished}
-        record-id={recordId}
-      ></lightning-file-upload>
-    </div>
+  <lightning-card icon-name="custom:custom19" title="Read CSV File ">
+    <template if:true={processing}>
+      <lightning-spinner
+        alternative-text="Loading"
+        size="small"
+      ></lightning-spinner>
+    </template>
 
     <div class="slds-m-around_medium">
       <lightning-input
         type="file"
-        accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf"
+        accept=".csv"
         label="Attachment"
         onchange={openfileUpload}
       ></lightning-input>
@@ -25,33 +22,35 @@
         onclick={handleSubmit}
         variant="brand"
       ></lightning-button>
-    </div>
 
-    <div class="slds-m-around_medium">
       <lightning-button
-        label="Check Accounts are Unique"
-        onclick={handleUniqueAcount}
-        variant="brand"
+        label="Refresh"
+        onclick={handleRefresh}
+        variant="brand-outline"
       ></lightning-button>
     </div>
 
     <div if:true={error}>{error}</div>
     <br />
 
-    <lightning-datatable
-      columns={columns}
-      data={data}
-      hide-checkbox-column="true"
-      key-field="id"
-    ></lightning-datatable>
+    <div if:true={data.length}>
+      <b>Show all data</b>
+      <lightning-datatable
+        columns={columns}
+        data={data}
+        hide-checkbox-column="true"
+        key-field="id"
+      ></lightning-datatable>
 
-    <br />
+      <br />
 
-    <lightning-datatable
-      columns={columns}
-      data={wrongData}
-      hide-checkbox-column="true"
-      key-field="id"
-    ></lightning-datatable>
+      <b>Show wrong data</b>
+      <lightning-datatable
+        columns={columns}
+        data={wrongData}
+        hide-checkbox-column="true"
+        key-field="id"
+      ></lightning-datatable>
+    </div>
   </lightning-card>
 </template>

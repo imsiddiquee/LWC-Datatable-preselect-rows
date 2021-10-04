@@ -3,36 +3,20 @@ import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { csvToArray } from "c/utils";
 import getExistAccounts from "@salesforce/apex/ReadCSVFileController.getExistAccounts";
 
-const BASE_URL = `https://${window.location.hostname}/`;
+/**
+ * deploy==>util.js
+ */
+
 const ACC_COLUMN = "accountName";
 const EMAIL_COLUMN = "email";
-const COLUMN = [
-  {
-    label: "Exist Account",
-    fieldName: "accountUrl",
-    wrapText: true,
-    initialWidth: 100,
-    type: "url",
-    typeAttributes: {
-      label: {
-        fieldName: ACC_COLUMN
-      },
-      tooltip: "Acc Name",
-      target: "_blank"
-    },
-    cellAttributes: {
-      alignment: "left",
-      class: { fieldName: "accountColor" },
-      iconName: { fieldName: "accountIconName" },
-      iconPosition: "right"
-    }
-  }
-];
 
 export default class ReadCSVFile extends LightningElement {
+  processing = false;
   @track error;
   @track columns = [];
-  @track data;
+  _csvData = [];
+  @track data = [];
+  _csvWrongData = [];
   @track wrongData;
 
   @track
@@ -41,13 +25,6 @@ export default class ReadCSVFile extends LightningElement {
   // accepted parameters
   get acceptedFormats() {
     return [".csv"];
-  }
-
-  connectedCallback() {
-    // this.columns = [{ label: "Name", fieldName: "name" }];
-    // this.data = [{ name: "test" }];
-    // console.log(this.columns.length);
-    // console.log(this.data.length);
   }
 
   openfileUpload(event) {
@@ -66,6 +43,7 @@ export default class ReadCSVFile extends LightningElement {
       console.log(this.fileData);
     };
     reader.readAsDataURL(file);
+    this.toast("File uplodad successfully!");
   }
 
   toast(title) {
@@ -86,29 +64,35 @@ export default class ReadCSVFile extends LightningElement {
     );
   }
 
-  validateEmail(email) {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  }
-
   handleSubmit() {
+    this.processing = true;
     const { filename, base64 } = this.fileData;
 
     //get csv file data.
-    const csvData = csvToArray(base64);
-    this.data = csvData.data;
 
-    //Get wrong data from dublicate email
-    let tempWrongData = [];
+    this._csvData = csvToArray(base64);
+    this._csvWrongData = this._csvData.wrongData;
 
-    if (csvData.columns.some((p) => p === EMAIL_COLUMN)) {
+    this.getWrongEmailData();
+    this.getWrongAccountData();
+    this.getExistAccountData();
+
+    this.data = this._csvData.alldata;
+    this.formatColumns();
+  }
+
+  getWrongEmailData() {
+    const allCSVData = this._csvData.data;
+    const allCSVColumns = this._csvData.columns;
+    let tempWrongData = this._csvWrongData;
+
+    if (allCSVColumns.some((p) => p === EMAIL_COLUMN)) {
       let uniqueEmails = [
-        ...new Set(csvData.data.map((item) => item[EMAIL_COLUMN]))
+        ...new Set(allCSVData.map((item) => item[EMAIL_COLUMN]))
       ];
 
       //check null
-      const nullEmails = csvData.data.filter(
+      const nullEmails = allCSVData.filter(
         (item) => !this.isNotBlank(item[EMAIL_COLUMN])
       );
       tempWrongData = [...tempWrongData, ...nullEmails];
@@ -118,74 +102,67 @@ export default class ReadCSVFile extends LightningElement {
       //and check dublicate
       uniqueEmails.forEach((uEmail) => {
         if (!this.validateEmail(uEmail)) {
-          const wrongEmailFormatRows = csvData.data.filter(
+          const wrongEmailFormatRows = allCSVData.filter(
             (item) => item[EMAIL_COLUMN] === uEmail
           );
           tempWrongData = [...tempWrongData, ...wrongEmailFormatRows];
         } else {
-          const dublicateRows = csvData.data.filter(
+          const dublicateEmails = allCSVData.filter(
             (item) => item[EMAIL_COLUMN] === uEmail
           );
-          if (dublicateRows.length > 1) {
-            tempWrongData = [...tempWrongData, ...dublicateRows];
+          if (dublicateEmails.length > 1) {
+            tempWrongData = [...tempWrongData, ...dublicateEmails];
           }
         }
       });
     }
 
-    this.wrongData = tempWrongData;
+    this._csvWrongData = tempWrongData;
+  }
 
-    if (csvData.columns.some((p) => p === ACC_COLUMN)) {
-      debugger;
-      //this.wrongData = tempWrongData;
-      // check unique accounts
-      let uniqueAccounts = [
-        ...new Set(csvData.data.map((item) => item[ACC_COLUMN]))
-      ];
+  validateEmail(email) {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
 
-      //check null
-      const nullAccounts = csvData.data.filter(
+  getWrongAccountData() {
+    const allCSVData = this._csvData.data;
+    const allCSVColumns = this._csvData.columns;
+    let tempWrongData = this._csvWrongData;
+
+    if (allCSVColumns.some((p) => p === ACC_COLUMN)) {
+      //check null/blank accounts
+      const nullAccounts = allCSVData.filter(
         (item) => !this.isNotBlank(item[ACC_COLUMN])
       );
       tempWrongData = [...tempWrongData, ...nullAccounts];
-      uniqueAccounts = uniqueAccounts.filter(Boolean);
-      this.wrongData = tempWrongData;
-
-      this.getDataBaseAccounts(uniqueAccounts);
     }
 
-    //format columns
-    //accountName
-    //let tempColumns = this.removeItem(csvData.columns, ACC_COLUMN);
+    this._csvWrongData = tempWrongData;
+  }
 
-    let tempColumns = csvData.columns.map((item) => {
-      let columnLabel = item;
-      let columnFieldName = item;
+  getExistAccountData() {
+    const allCSVData = this._csvData.data;
+    const allCSVColumns = this._csvData.columns;
 
-      return {
-        label: columnLabel,
-        fieldName: columnFieldName
-      };
-    });
-    let tempColumnResult = tempColumns.concat(COLUMN);
-    this.columns = tempColumnResult;
-    //this.columns = csvData.columns;
-
-    //format data
-    this.data = csvData.data;
-    console.log(csvData.data);
+    if (allCSVColumns.some((p) => p === ACC_COLUMN)) {
+      let uniqueAccounts = [
+        ...new Set(allCSVData.map((item) => item[ACC_COLUMN]))
+      ];
+      uniqueAccounts = uniqueAccounts.filter(Boolean);
+      this.getDataBaseAccounts(uniqueAccounts);
+    }
   }
 
   getDataBaseAccounts(uniqueAccounts) {
-    debugger;
-    let tempData = JSON.parse(JSON.stringify(this.data));
-    let tempWrongData = JSON.parse(JSON.stringify(this.wrongData));
+    let allCSVData = this._csvData.data;
+    let tempWrongData = this._csvWrongData;
 
     getExistAccounts({ accountIds: uniqueAccounts })
       .then((result) => {
         result.forEach((accItem) => {
-          debugger;
-          const existAccounts = tempData.filter(
+          const existAccounts = allCSVData.filter(
             (item) => item[ACC_COLUMN] === accItem.Name
           );
 
@@ -205,51 +182,27 @@ export default class ReadCSVFile extends LightningElement {
         );
       })
       .finally(() => {
+        this.processing = false;
         this.wrongData = tempWrongData;
       });
   }
 
-  handleUniqueAcount() {
-    let tempData = Object.values(this.data);
+  formatColumns() {
+    let tempColumns = this._csvData.columns.map((item) => {
+      let columnLabel = item;
+      let columnFieldName = item;
 
-    getExistAccounts({ accountIds: this.data.map((item) => item.accountName) })
-      .then((result) => {
-        console.log("result", result);
+      return {
+        label: columnLabel,
+        fieldName: columnFieldName
+      };
+    });
 
-        result.map((item) => {
-          debugger;
-          let index = tempData.findIndex(
-            (aItem) => aItem[ACC_COLUMN] === item.Name
-          );
-          let temp = tempData[index];
+    this.columns = tempColumns;
+  }
 
-          let accountColor = "slds-text-color_error";
-
-          let accountIconName = "utility:info";
-          temp.accountColor = accountColor;
-          temp.accountIconName = accountIconName;
-          temp.accountUrl = BASE_URL + item.Id;
-          tempData[index] = temp;
-
-          return {
-            item
-          };
-        });
-
-        console.log("tempData", tempData);
-      })
-      .catch((error) => {
-        this.error = error;
-        this.dispatchEvent(
-          new ShowToastEvent({
-            title: "Error!!",
-            message: JSON.stringify(error),
-            variant: "error"
-          })
-        );
-      })
-      .finally(() => {
-        this.data = tempData;
-      });
+  handleRefresh() {
+    this.data = [];
+    this.wrongData = [];
   }
 }

@@ -97,6 +97,8 @@ export function csvToArray(str, delimiter = ",") {
   // use headers.reduce to create an object
   // object properties derived from headers:values
   // the object passed as an element of the array
+  let validData = [];
+  let wrongData = [];
   const arr = rows.map(function (row) {
     let values = row.split(delimiter);
     values = values.map((item) => item.trim());
@@ -104,12 +106,21 @@ export function csvToArray(str, delimiter = ",") {
       object[header] = values[index];
       return object;
     }, {});
+
+    if (values.length !== headers.length) {
+      wrongData.push(el);
+    } else {
+      validData.push(el);
+    }
+
     return el;
   });
 
   // return the array
   return {
     columns: headers,
-    data: arr
+    alldata: arr,
+    data: validData,
+    wrongData: wrongData
   };
 }
