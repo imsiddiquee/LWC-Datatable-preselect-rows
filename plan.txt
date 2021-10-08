@@ -419,6 +419,8 @@ standard names
         String key, whereClause = '';
         Decimal maxPrice;
         String[] categories, materials, levels, criteria = new List<String>{};
+        List<Account> accListToInsert = new List<Account>();
+        String.equalsIgnoreCase('paid');
 
 public with sharing class OrderController {
     @AuraEnabled(Cacheable=true)
@@ -457,6 +459,61 @@ public static Product__c[] getSimilarProducts(Id productId, Id familyId) {
         WITH SECURITY_ENFORCED
     ];
 }
+
+globally variable declare in apex
+
+    public with sharing class PropertyController {
+        private static final Decimal DEFAULT_MAX_PRICE = 9999999;
+        private static final Integer DEFAULT_PAGE_SIZE = 9;
+
+        private Set<Id> paidInvoiceIdSet=new Set<Id>();
+        private static Boolean hasExecuted=false;
+    }
+
+avoid recursive all on trigger user below class
+
+    public class CheckRecursiveCallbacktrigger
+    {
+        private static boolean run = true;
+        public static boolean runOnce()
+        {
+            if(run)
+            {
+            run=false;
+            return true;
+            }
+            else
+            {
+                return run;
+            }
+        }
+    }
+
+    So if trigger will try to run second time in same request then it will not run.
+    
+    public class RecursiveTriggerHandler{
+     public static Boolean isFirstTime = true;
+    }
+
+
+    trigger SampleTrigger on Contact (after update){
+ 
+    Set<String> accIdSet = new Set<String>();
+     
+    if(RecursiveTriggerHandler.isFirstTime){
+        RecursiveTriggerHandler.isFirstTime = false;
+         
+        for(Contact conObj : Trigger.New){
+            if(conObj.name != 'SFDC'){
+                accIdSet.add(conObj.accountId);
+            }
+        }
+         
+        // Use accIdSet in some way
+    }
+}
+
+
 
 lwc
     variable
@@ -510,3 +567,10 @@ set product information
     this._product="test Product";
 get product information
     this.product;
+
+
+trigger design pattern
+
+    trigger==>InvoiceTrigger
+        trigger handler==>InvoiceTriggerHandler
+        handler service==>InvoiceService
