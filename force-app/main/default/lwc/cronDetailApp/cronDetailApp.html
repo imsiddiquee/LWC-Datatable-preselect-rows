@@ -1,190 +1,187 @@
 <template>
-  <lightning-card title={componentTitle}>
-    <lightning-button-icon
-      slot="actions"
-      icon-name="utility:sync"
-      alternative-text="Refresh"
-      title="Refresh"
-      onclick={refreshList}
-    ></lightning-button-icon>
+    <lightning-card title={componentTitle}>
+        <lightning-button-icon
+            slot="actions"
+            icon-name="utility:sync"
+            alternative-text="Refresh"
+            title="Refresh"
+            onclick={refreshList}
+        ></lightning-button-icon>
 
-    <template if:true={processing}>
-      <lightning-spinner
-        alternative-text="Loading"
-        size="small"
-      ></lightning-spinner>
-    </template>
+        <template if:true={processing}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
 
-    <template if:true={userOptionsList}>
-      <div class="slds-var-m-around_medium">
-        <lightning-combobox
-          name="ActiveUsers"
-          label="Active Users"
-          value={selectedUser}
-          placeholder="Select User"
-          options={userOptionsList}
-          onchange={handleUserChange}
-        ></lightning-combobox>
-      </div>
-    </template>
+        <template if:true={userOptionsList}>
+            <div class="slds-var-m-around_medium">
+                <lightning-combobox
+                    name="ActiveUsers"
+                    label="Active Users"
+                    value={selectedUser}
+                    placeholder="Select User"
+                    options={userOptionsList}
+                    onchange={handleUserChange}
+                ></lightning-combobox>
+            </div>
+        </template>
 
-    <!--Selected user details-->
-    <div class="slds-var-m-around_medium">
-      <template if:true={selectedUser}>
-        <c-user-detail user-detail={userDetail}> </c-user-detail>
-      </template>
-    </div>
+        <!--Selected user details-->
+        <div class="slds-var-m-around_medium">
+            <template if:true={selectedUser}>
+                <c-user-detail user-detail={userDetail}> </c-user-detail>
+            </template>
+        </div>
 
-    <!--Job summary jobs-->
+        <!--Job summary jobs-->
 
-    <div class="slds-var-m-around_medium">
-      <div class="slds-card_boundary slds-var-m-around_xxx-small">
-        <lightning-card>
-          <h3 slot="title" class="slds-text-color_success">Job summary</h3>
+        <div class="slds-var-m-around_medium">
+            <div class="slds-card_boundary slds-var-m-around_xxx-small">
+                <lightning-card>
+                    <h3 slot="title" class="slds-text-color_success">Job summary</h3>
 
-          <lightning-layout horizontal-align="spread">
-            <lightning-layout-item
-              padding="around-small"
-              class="
-                slds-icon-custom-custom106
-                slds-text-align_center
-                slds-var-m-around_xxx-small
-                slds-box slds-box_small
-              "
-            >
-              <p>Cron Job</p>
-              <lightning-badge label={cronData.length}></lightning-badge>
-            </lightning-layout-item>
+                    <lightning-layout horizontal-align="spread">
+                        <lightning-layout-item
+                            padding="around-small"
+                            class="
+                                slds-icon-custom-custom106
+                                slds-text-align_center
+                                slds-var-m-around_xxx-small
+                                slds-box slds-box_small
+                            "
+                        >
+                            <p>Cron Job</p>
+                            <lightning-badge label={cronData.length}></lightning-badge>
+                        </lightning-layout-item>
 
-            <lightning-layout-item
-              padding="around-small"
-              class="
-                slds-icon-custom-custom8
-                slds-text-align_center
-                slds-var-m-around_xxx-small
-                slds-box slds-box_small
-              "
-            >
-              <p>Flow/P-builder Job</p>
-              <lightning-badge label={flowData.length}></lightning-badge>
-            </lightning-layout-item>
+                        <lightning-layout-item
+                            padding="around-small"
+                            class="
+                                slds-icon-custom-custom8
+                                slds-text-align_center
+                                slds-var-m-around_xxx-small
+                                slds-box slds-box_small
+                            "
+                        >
+                            <p>Flow/P-builder Job</p>
+                            <lightning-badge label={flowData.length}></lightning-badge>
+                        </lightning-layout-item>
 
-            <lightning-layout-item
-              padding="around-small"
-              class="
-                slds-icon-custom-custom17
-                slds-text-align_center
-                slds-var-m-around_xxx-small
-                slds-box slds-box_small
-              "
-            >
-              <p>Approval Job</p>
-              <lightning-badge label={approvalData.length}></lightning-badge>
-            </lightning-layout-item>
+                        <lightning-layout-item
+                            padding="around-small"
+                            class="
+                                slds-icon-custom-custom17
+                                slds-text-align_center
+                                slds-var-m-around_xxx-small
+                                slds-box slds-box_small
+                            "
+                        >
+                            <p>Approval Job</p>
+                            <lightning-badge label={approvalData.length}></lightning-badge>
+                        </lightning-layout-item>
 
-            <lightning-layout-item
-              padding="around-small"
-              class="
-                slds-icon-custom-custom10
-                slds-text-align_center
-                slds-var-m-around_xxx-small
-                slds-box slds-box_small
-              "
-            >
-              <p>Workflow Job</p>
-              <lightning-badge label={workflowData.length}></lightning-badge>
-            </lightning-layout-item>
+                        <lightning-layout-item
+                            padding="around-small"
+                            class="
+                                slds-icon-custom-custom10
+                                slds-text-align_center
+                                slds-var-m-around_xxx-small
+                                slds-box slds-box_small
+                            "
+                        >
+                            <p>Workflow Job</p>
+                            <lightning-badge label={workflowData.length}></lightning-badge>
+                        </lightning-layout-item>
 
-            <lightning-layout-item
-              padding="around-small"
-              class="
-                slds-icon-custom-custom90
-                slds-text-align_center
-                slds-var-m-around_xxx-small
-                slds-box slds-box_small
-              "
-            >
-              <p>Apex Job</p>
-              <lightning-badge label={apexJobData.length}></lightning-badge>
-            </lightning-layout-item>
+                        <lightning-layout-item
+                            padding="around-small"
+                            class="
+                                slds-icon-custom-custom90
+                                slds-text-align_center
+                                slds-var-m-around_xxx-small
+                                slds-box slds-box_small
+                            "
+                        >
+                            <p>Apex Job</p>
+                            <lightning-badge label={apexJobData.length}></lightning-badge>
+                        </lightning-layout-item>
 
-            <lightning-layout-item
-              padding="around-small"
-              class="
-                slds-icon-custom-custom51
-                slds-text-align_center
-                slds-var-m-around_xxx-small
-                slds-box slds-box_small
-              "
-            >
-              <p>Reports</p>
-              <lightning-badge label={reportData.length}></lightning-badge>
-            </lightning-layout-item>
-          </lightning-layout>
-        </lightning-card>
-      </div>
-    </div>
+                        <lightning-layout-item
+                            padding="around-small"
+                            class="
+                                slds-icon-custom-custom51
+                                slds-text-align_center
+                                slds-var-m-around_xxx-small
+                                slds-box slds-box_small
+                            "
+                        >
+                            <p>Reports</p>
+                            <lightning-badge label={reportData.length}></lightning-badge>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-card>
+            </div>
+        </div>
 
-    <!--Job summary jobs-->
+        <!--Job summary jobs-->
 
-    <div class="slds-var-m-around_medium">
-      <template if:true={cronData.length}>
-        <c-reusable-data-table
-          card-title="Cron Job list"
-          source-data={cronData}
-          columns={cronColumns}
-          onrefreshrecords={refreshFromChild}
-        ></c-reusable-data-table>
-      </template>
-    </div>
+        <div class="slds-var-m-around_medium">
+            <template if:true={cronData.length}>
+                <c-reusable-data-table
+                    card-title="Cron Job list"
+                    source-data={cronData}
+                    columns={cronColumns}
+                    onrefreshrecords={refreshFromChild}
+                ></c-reusable-data-table>
+            </template>
+        </div>
 
-    <div class="slds-var-m-around_medium">
-      <template if:true={flowData.length}>
-        <c-reusable-data-table
-          card-title="Process builder and flow Job list"
-          source-data={flowData}
-          columns={flowColumns}
-        ></c-reusable-data-table>
-      </template>
-    </div>
+        <div class="slds-var-m-around_medium">
+            <template if:true={flowData.length}>
+                <c-reusable-data-table
+                    card-title="Process builder and flow Job list"
+                    source-data={flowData}
+                    columns={flowColumns}
+                ></c-reusable-data-table>
+            </template>
+        </div>
 
-    <div class="slds-var-m-around_medium">
-      <template if:true={approvalData.length}>
-        <c-reusable-data-table
-          card-title="Approval Job list"
-          source-data={approvalData}
-          columns={approvalColumns}
-        ></c-reusable-data-table>
-      </template>
-    </div>
+        <div class="slds-var-m-around_medium">
+            <template if:true={approvalData.length}>
+                <c-reusable-data-table
+                    card-title="Approval Job list"
+                    source-data={approvalData}
+                    columns={approvalColumns}
+                ></c-reusable-data-table>
+            </template>
+        </div>
 
-    <div class="slds-var-m-around_medium">
-      <template if:true={workflowData.length}>
-        <c-reusable-data-table
-          card-title="Workflow Job list"
-          source-data={workflowData}
-          columns={workflowColumns}
-        ></c-reusable-data-table>
-      </template>
-    </div>
-    <div class="slds-var-m-around_medium">
-      <template if:true={apexJobData.length}>
-        <c-reusable-data-table
-          card-title="Apex Job list"
-          source-data={apexJobData}
-          columns={apexColumns}
-        ></c-reusable-data-table>
-      </template>
-    </div>
+        <div class="slds-var-m-around_medium">
+            <template if:true={workflowData.length}>
+                <c-reusable-data-table
+                    card-title="Workflow Job list"
+                    source-data={workflowData}
+                    columns={workflowColumns}
+                ></c-reusable-data-table>
+            </template>
+        </div>
+        <div class="slds-var-m-around_medium">
+            <template if:true={apexJobData.length}>
+                <c-reusable-data-table
+                    card-title="Apex Job list"
+                    source-data={apexJobData}
+                    columns={apexColumns}
+                ></c-reusable-data-table>
+            </template>
+        </div>
 
-    <div class="slds-var-m-around_medium">
-      <template if:true={reportData.length}>
-        <c-reusable-data-table
-          card-title="Report list"
-          source-data={reportData}
-          columns={reportColumns}
-        ></c-reusable-data-table>
-      </template>
-    </div>
-  </lightning-card>
+        <div class="slds-var-m-around_medium">
+            <template if:true={reportData.length}>
+                <c-reusable-data-table
+                    card-title="Report list"
+                    source-data={reportData}
+                    columns={reportColumns}
+                ></c-reusable-data-table>
+            </template>
+        </div>
+    </lightning-card>
 </template>
