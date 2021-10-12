@@ -1,75 +1,60 @@
 <template>
-  <template if:true={processing}>
-    <lightning-spinner
-      alternative-text="Loading"
-      size="small"
-    ></lightning-spinner>
-  </template>
+    <template if:true={processing}>
+        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+    </template>
 
-  <div class="slds-card_boundary slds-var-m-around_xxx-small">
-    <lightning-card class="slds-table_striped">
-      <template if:true={items.length}>
-        <lightning-button-icon
-          slot="actions"
-          icon-name="utility:download"
-          alternative-text="Export to csv"
-          title="Export to csv"
-          onclick={exportToCSV}
-        ></lightning-button-icon>
-      </template>
+    <div class="slds-card_boundary slds-var-m-around_xxx-small">
+        <lightning-card class="slds-table_striped">
+            <template if:true={items.length}>
+                <lightning-button-icon
+                    slot="actions"
+                    icon-name="utility:download"
+                    alternative-text="Export to csv"
+                    title="Export to csv"
+                    onclick={exportToCSV}
+                ></lightning-button-icon>
+            </template>
 
-      <h3 slot="title">
-        {cardTitle} has a total of
-        <lightning-badge label={totalRecountCount}></lightning-badge> records
-      </h3>
+            <h3 slot="title">
+                {cardTitle} has a total of
+                <lightning-badge label={totalRecountCount}></lightning-badge> records
+            </h3>
 
-      <template if:false={isHideChkColumn}>
-        <h3 slot="title" class="slds-text-color_success">
-          Total selected rows
-          <lightning-badge label={allSeletedRowCount}></lightning-badge>
-        </h3>
-      </template>
+            <template if:false={isHideChkColumn}>
+                <h3 slot="title" class="slds-text-color_success">
+                    Total selected rows
+                    <lightning-badge label={allSeletedRowCount}></lightning-badge>
+                </h3>
+            </template>
 
-      <lightning-datatable
-        class={columnBoarderClass}
-        key-field="id"
-        data={data}
-        onrowaction={handleRowAction}
-        show-row-number-column
-        row-number-offset={rowOffset}
-        hide-checkbox-column={isHideChkColumn}
-        columns={columns}
-        selected-rows={prePageSelectedRows}
-        onrowselection={handleRowSelection}
-      >
-      </lightning-datatable>
+            <lightning-datatable
+                class={columnBoarderClass}
+                key-field="id"
+                data={data}
+                onrowaction={handleRowAction}
+                show-row-number-column
+                row-number-offset={rowOffset}
+                hide-checkbox-column={isHideChkColumn}
+                columns={columns}
+                selected-rows={prePageSelectedRows}
+                onrowselection={handleRowSelection}
+            >
+            </lightning-datatable>
 
-      <div slot="footer">
-        <div class="slds-var-m-around_medium">
-          <p class="slds-var-m-vertical_medium content">
-            Displaying {startingRecord} to {endingRecord} of {totalRecountCount}
-            records. Page {page} of {totalPage}.
-          </p>
-          <c-paginator
-            page={page}
-            total-page={totalPage}
-            onprevious={previousHandler}
-            onnext={nextHandler}
-          ></c-paginator>
-        </div>
-      </div>
-    </lightning-card>
-  </div>
-
-  <c-confirmation-dialog
-    title="Confirmation Title"
-    message={confirmationDisplayMessage}
-    confirm-label="Yes"
-    cancel-label="No"
-    visible={isDialogVisible}
-    original-message={originalMessage}
-    name="confirmModal"
-    onmodalaction={handleConfirmationClick}
-  >
-  </c-confirmation-dialog>
+            <div slot="footer">
+                <div class="slds-var-m-around_medium">
+                    <p class="slds-var-m-vertical_medium content">
+                        Displaying {startingRecord} to {endingRecord} of {totalRecountCount} records. Page {page} of
+                        {totalPage}.
+                    </p>
+                    <c-paginator
+                        page={page}
+                        total-page={totalPage}
+                        onprevious={previousHandler}
+                        onnext={nextHandler}
+                    ></c-paginator>
+                </div>
+            </div>
+        </lightning-card>
+    </div>
 </template>
