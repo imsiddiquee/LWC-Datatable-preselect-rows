@@ -269,22 +269,16 @@ export default class CronDetailApp extends LightningElement {
 
             data.forEach((item) => {
                 this.cronData.push({
-                    id: item.Id,
-                    jobId: item.CronJobDetail.Id,
-                    jobName: item.CronJobDetail.Name,
+                    ...item,
+
                     jobType:
-                        this.JOBTYPEMAP[item.CronJobDetail.JobType] === undefined ||
-                        this.JOBTYPEMAP[item.CronJobDetail.JobType] === null
-                            ? item.CronJobDetail.JobType
-                            : this.JOBTYPEMAP[item.CronJobDetail.JobType].jobName,
-                    state: item.State,
-                    previousFireTime: item.PreviousFireTime,
-                    nextFireTime: item.NextFireTime,
-                    ownerId: item.OwnerId
+                        this.JOBTYPEMAP[item.jobType] === undefined || this.JOBTYPEMAP[item.jobType] === null
+                            ? item.CronJobDetail.jobType
+                            : this.JOBTYPEMAP[item.jobType].jobName
                 });
             });
 
-            //console.log(this.tableData);
+            //console.log(this.cronData);
         } else if (error) {
             console.log("error");
         }
