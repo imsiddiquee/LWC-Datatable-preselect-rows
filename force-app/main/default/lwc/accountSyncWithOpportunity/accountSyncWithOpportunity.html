@@ -1,80 +1,64 @@
 <template>
-  <lightning-card
-    variant="Narrow"
-    title={componentTitle}
-    icon-name="standard:account"
-  >
-    <div class="slds-var-p-horizontal_small">
-      <lightning-button
-        variant="brand"
-        label="Load Acc related latest opportunity"
-        title="Load Acc related latest opportunity"
-        onclick={handleLoadAccountRelatedLatestOpportunity}
-        icon-name="standard:dataset"
-        class="slds-var-p-around_xxx-small"
-      >
-      </lightning-button>
+   <lightning-card variant="Narrow" title={componentTitle} icon-name="standard:account">
+      <div class="slds-var-p-horizontal_small">
+         <lightning-button
+            variant="brand"
+            label="Load Acc related latest opportunity"
+            title="Load Acc related latest opportunity"
+            onclick={handleLoadAccountRelatedLatestOpportunity}
+            icon-name="standard:dataset"
+            class="slds-var-p-around_xxx-small"
+         >
+         </lightning-button>
+
+         <template if:true={accountData.length}>
+            <lightning-button
+               variant="success"
+               label="Sync Acc with Opp"
+               title="Sync Acc with Opp"
+               onclick={handleSync}
+               icon-name="standard:loop"
+               class="slds-var-p-around_xxx-small"
+            >
+            </lightning-button>
+         </template>
+      </div>
+      <template if:true={accountData.length}>
+         <div class="slds-var-m-around_small">
+            <lightning-badge label="Active account" class="slds-badge_inverse"></lightning-badge>
+
+            <lightning-badge label="Latest opportunity" class="slds-badge_inverse"></lightning-badge>
+
+            <lightning-badge label="Closed won opportunity" class="slds-badge_inverse"></lightning-badge>
+         </div>
+      </template>
+
+      <template if:true={processing}>
+         <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+      </template>
 
       <template if:true={accountData.length}>
-        <lightning-button
-          variant="success"
-          label="Sync Acc with Opp"
-          title="Sync Acc with Opp"
-          onclick={handleSync}
-          icon-name="standard:loop"
-          class="slds-var-p-around_xxx-small"
-        >
-        </lightning-button>
-      </template>
-    </div>
-    <template if:true={accountData.length}>
-      <div class="slds-var-m-around_small">
-        <lightning-badge
-          label="Active account"
-          class="slds-badge_inverse"
-        ></lightning-badge>
+         <lightning-button-icon
+            icon-name="utility:sync"
+            variant="border-filled"
+            alternative-text="Sync Acc with Opp"
+            slot="actions"
+            onclick={handleSync}
+         ></lightning-button-icon>
 
-        <lightning-badge
-          label="Latest opportunity"
-          class="slds-badge_inverse"
-        ></lightning-badge>
+         <div class="slds-var-m-around_medium">
+            <template if:true={accountData.length}>
+               <c-reusable-data-table-with-preselect
+                  data-id="accountSyncGrid"
+                  card-title="Account list"
+                  source-data={accountData}
+                  columns={accountColumns}
+                  column-boarder="true"
+                  hide-checkbox="false"
+               >
+               </c-reusable-data-table-with-preselect>
 
-        <lightning-badge
-          label="Closed won opportunity"
-          class="slds-badge_inverse"
-        ></lightning-badge>
-      </div>
-    </template>
-
-    <template if:true={processing}>
-      <lightning-spinner
-        alternative-text="Loading"
-        size="small"
-      ></lightning-spinner>
-    </template>
-
-    <template if:true={accountData.length}>
-      <lightning-button-icon
-        icon-name="utility:sync"
-        variant="border-filled"
-        alternative-text="Sync Acc with Opp"
-        slot="actions"
-        onclick={handleSync}
-      ></lightning-button-icon>
-
-      <div class="slds-var-m-around_medium">
-        <template if:true={accountData.length}>
-          <c-reusable-data-table-with-preselect
-            data-id="accountSyncGrid"
-            card-title="Account list"
-            source-data={accountData}
-            columns={accountColumns}
-            column-boarder="true"
-            hide-checkbox="false"
-          >
-          </c-reusable-data-table-with-preselect>
-
-          <!-- <c-reusable-data-table
+               <!-- <c-reusable-data-table
           data-id="overview"
           card-title="Account list"
           source-data={accountData}
@@ -82,8 +66,8 @@
           column-boarder="false"
         >
         </c-reusable-data-table> -->
-        </template>
-      </div>
-    </template>
-  </lightning-card>
+            </template>
+         </div>
+      </template>
+   </lightning-card>
 </template>
