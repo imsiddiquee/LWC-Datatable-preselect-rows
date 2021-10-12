@@ -273,7 +273,7 @@ export default class CronDetailApp extends LightningElement {
 
                     jobType:
                         this.JOBTYPEMAP[item.jobType] === undefined || this.JOBTYPEMAP[item.jobType] === null
-                            ? item.CronJobDetail.jobType
+                            ? item.jobType
                             : this.JOBTYPEMAP[item.jobType].jobName
                 });
             });
