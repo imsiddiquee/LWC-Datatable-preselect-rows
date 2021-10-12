@@ -2,6 +2,10 @@ Org::report_pg
 imsiddiquee@cunning-goat-hwvix2.com
 tigerhunter3
 
+Org::shahin
+imsiddiquee@resourceful-panda-azytji.com
+tigerhunter3
+
 local development server or scratch org
     //first command for local developer server
     sfdx plugins:install @salesforce/lwc-dev-server
@@ -102,10 +106,10 @@ trigger class stacks/framework
 https://www.youtube.com/watch?v=BUEvi7exEJ8&t=510s&ab_channel=SFDCPanther
 
 1)TriggerInterface
-2)ContactTrigger //need to configure
+2)ContactTrigger //need to configure(3)
 3)TriggerDispatcher 
-4)ContactTriggerHandler//need to configure
-5)ContactTriggerHelper//need to configure
+4)ContactTriggerHandler//need to configure(1)
+5)ContactService(Hold business logic)//need to configure(2)
 6)TransactionLogHandler
 
 trigger error message
@@ -422,6 +426,10 @@ standard names
         List<Account> accListToInsert = new List<Account>();
         String.equalsIgnoreCase('paid');
 
+list to set
+    Set<Id> conIds = new Set<Id>();
+    conIds = (new Map<Id, Contact>(conList)).keySet().clone();
+
 public with sharing class OrderController {
     @AuraEnabled(Cacheable=true)
     public static Order_Item__c[] getOrderItems(Id orderId) {
@@ -487,6 +495,11 @@ avoid recursive all on trigger user below class
                 return run;
             }
         }
+    }
+
+    if(CheckRecursiveCallbacktrigger.runOnce())
+    {
+
     }
 
     So if trigger will try to run second time in same request then it will not run.
@@ -574,3 +587,20 @@ trigger design pattern
     trigger==>InvoiceTrigger
         trigger handler==>InvoiceTriggerHandler
         handler service==>InvoiceService
+
+    code written format
+        any message 	==> Account can not be deleted
+        
+        variable        ==> contact,account        
+
+        variable list   ==> accList (Pick base entity first 3 character+List)
+
+        variable set   ==> accIdsSet (Pick base entity first 3 character+Ids+Set)
+                            Set<Id> accIdsSet = new Set<Id>();
+
+        variable map    ==> Map<Id, Contact> accIdPrimaryConMap = new Map<Id, Contact>();
+
+        variable trigger==>  public static void beforeUpdate(Map<Id, sObject> newRecordsMap, Map<Id, sObject> oldRecordsMap)
+                                Map<Id, Contact> newRecordContactsMap = (Map<Id, Contact>) newRecordsMap;
+                                Map<Id, Contact> oldRecordContactsMap = (Map<Id, Contact>) oldRecordsMap;
+        

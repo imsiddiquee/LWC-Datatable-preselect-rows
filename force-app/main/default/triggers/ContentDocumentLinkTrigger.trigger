@@ -1,10 +1,4 @@
 trigger ContentDocumentLinkTrigger on ContentDocumentLink (after insert) {
-    if (trigger.isAfter) {
-        if(trigger.isInsert)
-        {
-            //ContentDocumentLinkTriggerHandler.After_Insert_UpdateAccountonFileCount(trigger.new);
-        }
-        
-    }
+    TriggerDispatcher.run(new ContentDocumentLinkHandler(), Trigger.OperationType);  
 
 }
