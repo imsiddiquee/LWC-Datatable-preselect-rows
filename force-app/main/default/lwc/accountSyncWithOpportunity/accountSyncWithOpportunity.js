@@ -1,7 +1,9 @@
-import { api, LightningElement, track } from "lwc";
+import { api, LightningElement, track, wire } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import { refreshApex } from "@salesforce/apex";
 import getLatestOpportunityRelatedAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.getLatestOpportunityRelatedAccounts";
 import syncLatestOpportunityWithAccounts from "@salesforce/apex/AccountSyncWithOpportunityController.syncLatestOpportunityWithAccounts";
+import refreshGridDummy from "@salesforce/apex/AccountSyncWithOpportunityController.refreshGridDummy";
 
 const BASE_URL = `https://${window.location.hostname}/`;
 
@@ -130,11 +132,15 @@ export default class AccountSyncWithOpportunity extends LightningElement {
     @api componentTitle = "Account Sync";
 
     @track
+    wiredResult = [];
+
+    @track
     accountData = [];
 
     accountColumns = COLUMNS;
     syncMessage = "";
-    processing = false;
+    showLoadingSpinner = false;
+    wiredResponse;
 
     showToastMessage(variant, message) {
         const toastEvnt = new ShowToastEvent({
@@ -146,11 +152,9 @@ export default class AccountSyncWithOpportunity extends LightningElement {
     }
 
     handleSync() {
-        this.processing = true;
+        this.showLoadingSpinner = true;
 
         let selectedRows = this.template.querySelector('[data-id="accountSyncGrid"]').getRows();
-
-        //console.log("selectedRows::", JSON.stringify(selectedRows.length));
 
         syncLatestOpportunityWithAccounts({ accounts: selectedRows })
             .then((response) => {
@@ -165,93 +169,85 @@ export default class AccountSyncWithOpportunity extends LightningElement {
             })
             .finally(() => {
                 //this.processing = false;
-                this.handleLoadAccountRelatedLatestOpportunity();
+                this.fillGridData();
             });
     }
 
-    handleSync2() {
-        this.processing = true;
+    @wire(getLatestOpportunityRelatedAccounts)
+    wiredGetLatestOpportunityRelatedAccounts(response) {
+        this.showLoadingSpinner = true;
+        this.wiredResponse = response;
+        console.log("wiredGetLatestOpportunityRelatedAccounts");
 
-        syncLatestOpportunityWithAccounts({ accounts: this.accountData })
-            .then((response) => {
-                if (response === "Success") {
-                    this.showToastMessage("success", `With success,total sync ${this.accountData.length} records.`);
-                } else {
-                    this.showToastMessage("error", `With errors reason for ${response}`);
-                }
-            })
-            .catch((error) => {
-                console.log(error.body.message);
-            })
-            .finally(() => {
-                //this.processing = false;
-                this.handleLoadAccountRelatedLatestOpportunity();
+        let data = response.data;
+        let error = response.error;
+
+        if (data || error) {
+            this.showLoadingSpinner = false;
+        }
+        this.wiredResult = [];
+
+        if (data) {
+            this.wiredResult = data.accList.map((item) => {
+                let accountUrl = BASE_URL + item.accountId;
+                let oppUrl = BASE_URL + item.opportunityId;
+                let amountColor =
+                    item.accountAmount !== item.opportunityAmount ? "slds-text-color_error" : "slds-text-color_success";
+
+                let mrrColor =
+                    item.accountMRR !== item.opportunityMRR ? "slds-text-color_error" : "slds-text-color_success";
+
+                let arrColor =
+                    item.accountARR !== item.opportunityARR ? "slds-text-color_error" : "slds-text-color_success";
+
+                let amountIconName = item.accountAmount !== item.opportunityAmount ? "utility:info" : "utility:success";
+
+                let mrrIconName = item.accountMRR !== item.opportunityMRR ? "utility:info" : "utility:success";
+
+                let arrIconName = item.accountARR !== item.opportunityARR ? "utility:info" : "utility:success";
+
+                return {
+                    ...item,
+                    id: item.accountId,
+                    accountUrl: accountUrl,
+                    oppUrl: oppUrl,
+                    amountColor: amountColor,
+                    mrrColor: mrrColor,
+                    arrColor: arrColor,
+                    amountIconName: amountIconName,
+                    mrrIconName: mrrIconName,
+                    arrIconName: arrIconName
+                };
             });
-
-        // call child component event to show selectd rows
-        // const selectedRows = this.template
-        //   .querySelector('[data-id="overview"]')
-        //   .getRows();
-
-        // let selectedRows = this.template
-        //   .querySelector("c-reusable-data-table")
-        //   .getRows();
-        // console.log("selectedRows::", JSON.stringify(selectedRows));
+        } else if (error) {
+            console.log("error");
+        }
     }
 
     handleLoadAccountRelatedLatestOpportunity() {
-        this.processing = true;
+        this.showLoadingSpinner = true;
+        this.fillGridData();
+    }
+    fillGridData() {
+        refreshApex(this.wiredResponse).finally(() => {
+            this.accountData = this.wiredResult;
+            this.showLoadingSpinner = false;
+        });
+    }
+
+    handleRefresh() {
+        this.showLoadingSpinner = true;
         this.accountData = [];
-
-        getLatestOpportunityRelatedAccounts()
-            .then((data) => {
-                if (data) {
-                    this.accountData = data.accList.map((item) => {
-                        let accountUrl = BASE_URL + item.accountId;
-                        let oppUrl = BASE_URL + item.opportunityId;
-                        let amountColor =
-                            item.accountAmount !== item.opportunityAmount
-                                ? "slds-text-color_error"
-                                : "slds-text-color_success";
-
-                        let mrrColor =
-                            item.accountMRR !== item.opportunityMRR
-                                ? "slds-text-color_error"
-                                : "slds-text-color_success";
-
-                        let arrColor =
-                            item.accountARR !== item.opportunityARR
-                                ? "slds-text-color_error"
-                                : "slds-text-color_success";
-
-                        let amountIconName =
-                            item.accountAmount !== item.opportunityAmount ? "utility:info" : "utility:success";
-
-                        let mrrIconName = item.accountMRR !== item.opportunityMRR ? "utility:info" : "utility:success";
-
-                        let arrIconName = item.accountARR !== item.opportunityARR ? "utility:info" : "utility:success";
-
-                        return {
-                            ...item,
-                            id: item.accountId,
-                            accountUrl: accountUrl,
-                            oppUrl: oppUrl,
-                            amountColor: amountColor,
-                            mrrColor: mrrColor,
-                            arrColor: arrColor,
-                            amountIconName: amountIconName,
-                            mrrIconName: mrrIconName,
-                            arrIconName: arrIconName
-                        };
-                    });
-                    //console.log(this.accountData);
-                }
+        refreshGridDummy()
+            .then(() => {
+                refreshApex(this.wiredResponse);
+                this.accountData = this.wiredResult;
             })
             .catch((error) => {
                 console.log(error.body.message);
             })
             .finally(() => {
-                this.processing = false;
+                this.showLoadingSpinner = false;
             });
     }
 }

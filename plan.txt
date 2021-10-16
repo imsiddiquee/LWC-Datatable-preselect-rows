@@ -526,6 +526,18 @@ avoid recursive all on trigger user below class
     }
 }
 
+set transaction point on apex
+  Savepoint sp = Database.setSavepoint();
+    try
+    {
+        update listAccToUpdate;
+    }
+    catch(Exception e)
+    {
+        Database.RollBack(sp);
+        System.debug(e);
+    }
+
 
 
 lwc
@@ -533,6 +545,7 @@ lwc
         markers=[];
         error;
     method
+        showLoadingSpinner
         getOrderItems
         getProducts
         getContactList
@@ -604,3 +617,22 @@ trigger design pattern
                                 Map<Id, Contact> newRecordContactsMap = (Map<Id, Contact>) newRecordsMap;
                                 Map<Id, Contact> oldRecordContactsMap = (Map<Id, Contact>) oldRecordsMap;
         
+apex naming convention
+    camelCase
+    PascaleCase
+    class name==>start with upper case==>Recipe==>PascaleCase
+    method name==> start with lower case==>doThis();==>camelCase
+    user is/has denote Boolean==>isEasy()
+    Constants==> all in capital letter==>ALL_CAPS
+
+
+datatable
+        // call child component event to show selectd rows
+        // const selectedRows = this.template
+        //   .querySelector('[data-id="overview"]')
+        //   .getRows();
+
+        // let selectedRows = this.template
+        //   .querySelector("c-reusable-data-table")
+        //   .getRows();
+        // console.log("selectedRows::", JSON.stringify(selectedRows));

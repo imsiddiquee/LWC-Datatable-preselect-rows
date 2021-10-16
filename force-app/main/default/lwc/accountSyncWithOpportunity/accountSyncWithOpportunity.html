@@ -33,20 +33,20 @@
             </div>
         </template>
 
-        <template if:true={processing}>
+        <template if:true={showLoadingSpinner}>
             <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
         </template>
 
         <template if:true={accountData.length}>
-            <!-- <lightning-button-icon
+            <lightning-button-icon
                 icon-name="utility:sync"
                 size="medium"
-                title="sync"
+                title="refresh"
                 variant="border-filled"
-                alternative-text="Sync Acc with Opp"
+                alternative-text="refresh Acc with Opp"
                 slot="actions"
-                onclick={handleSync}
-            ></lightning-button-icon> -->
+                onclick={handleRefresh}
+            ></lightning-button-icon>
             <div class="slds-var-m-around_medium">
                 <template if:true={accountData.length}>
                     <c-reusable-data-table-with-preselect
