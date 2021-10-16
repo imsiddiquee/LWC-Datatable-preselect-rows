@@ -177,7 +177,7 @@ export default class AccountSyncWithOpportunity extends LightningElement {
     wiredGetLatestOpportunityRelatedAccounts(response) {
         this.showLoadingSpinner = true;
         this.wiredResponse = response;
-        console.log("wiredGetLatestOpportunityRelatedAccounts");
+        //console.log("wiredGetLatestOpportunityRelatedAccounts");
 
         let data = response.data;
         let error = response.error;
