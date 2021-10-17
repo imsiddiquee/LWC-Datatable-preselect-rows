@@ -1,18 +1,37 @@
-# Salesforce DX Project: Next Steps
+# LWC: Datatable - way to programmatically handle preselect rows
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+## Let's try to understand together
 
-## How Do You Plan to Deploy Your Changes?
+* Create new components.
+* Used @wire and imperative process to Load data.
+* Helps to understand how to use @api for a parent-child component to configure data-table columns, data sources.
+* Child component with an LWC: Datatable.
+* Configure Parent component HTML Attribute to show/hide child component data-table checkbox.
+* Configure Parent component HTML Attribute to show/hide child component data-table column border.
+* From parent component how to select child component event.
+* On the parent component how to select child component by tag and id. 
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+## Overview
 
-## Configure Your Salesforce DX Project
+Recently I am working on LWC: Datatable. I need to show large data in tabular format. Large data will not load at a time, so need to use pagination. The table also has flexibility, a user can select records as per need. The selected records can process for the next step.
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+So, need to persist all selected rows. After configuring/selecting a page record. The user may view other pages also he may back to his configured page, the page should exist configured records.
 
-## Read All About It
+## Use case
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+The client has a requirement, want to see the retrieved records from the database in tabular view with pagination. There should have the functionality to preserve selected records.
+
+## Solution Approach
+
+We know lightning data-table easily helps us to show large data in tabular format, with a flexible selection approach.
+
+When pagination applies with the LWC: Datatable pre-selected-rows, it does not work straightforward way. Because apply pagination helps to display only selected page information and hide the rest of the records actually they are not populated yet.
+
+So when you want to know about the selected rows from the data table, it gives you results in only the current page information not persist the previous or next page configured selected records.
+
+To resolve the selection issue, we need to store the selected records page-wise. 
+
+When the user selects any page, the storage helps to populate his previous selected options. If he has done any new selection update. The system will also update the storage with the newly selected option.
+
+## Flow diagram
+
