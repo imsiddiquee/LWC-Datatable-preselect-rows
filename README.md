@@ -1,5 +1,7 @@
 # LWC: Datatable - way to programmatically handle preselect rows
 
+![Component-internal-structure](https://github.com/imsiddiquee/LWC-Datatable-preselect-rows/blob/main/postContent/Final%20output.png)
+
 ## Let's try to understand together
 
 * Create new components.
