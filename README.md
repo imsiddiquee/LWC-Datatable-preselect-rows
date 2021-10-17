@@ -35,3 +35,11 @@ When the user selects any page, the storage helps to populate his previous selec
 
 ## Flow diagram
 
+
+![Component-internal-structure](https://github.com/imsiddiquee/LWC-Datatable-preselect-rows/blob/main/postContent/Demonstrate%20user%20selection%20persist%20and%20repopulation%20process..png)
+
+## Final Outcome
+
+![Component-internal-structure](https://github.com/imsiddiquee/LWC-Datatable-preselect-rows/blob/main/postContent/Demonstrate%20user%20selection%20persist%20and%20repopulation%20process..gif)
+
+Finally, we are done, and thanks for reading!This process is implemented on the component **accountSyncWithOpportunity**.
